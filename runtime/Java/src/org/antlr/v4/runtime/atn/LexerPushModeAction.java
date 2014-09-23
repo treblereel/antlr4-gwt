@@ -112,6 +112,6 @@ public final class LexerPushModeAction implements LexerAction {
 
 	@Override
 	public String toString() {
-		return String.format("pushMode(%d)", mode);
+		return "pushMode(" + mode + ")";
 	}
 }

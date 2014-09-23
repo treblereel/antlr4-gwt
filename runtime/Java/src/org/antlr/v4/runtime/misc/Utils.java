@@ -30,16 +30,7 @@
 
 package org.antlr.v4.runtime.misc;
 
-import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -101,7 +92,8 @@ public class Utils {
 	}
 
 	public static void writeFile(String fileName, String content, String encoding) throws IOException {
-		File f = new File(fileName);
+		throw new UnsupportedOperationException("GWT not implemented");
+		/*File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
 		OutputStreamWriter osw;
 		if (encoding != null) {
@@ -116,7 +108,7 @@ public class Utils {
 		}
 		finally {
 			osw.close();
-		}
+		}*/
 	}
 
 	public static char[] readFile(String fileName) throws IOException {
@@ -124,6 +116,8 @@ public class Utils {
 	}
 
 	public static char[] readFile(String fileName, String encoding) throws IOException {
+		throw new UnsupportedOperationException("GWT not implemented");
+		/*
 		if ( fileName==null ) {
 			return null;
 		}
@@ -149,10 +143,13 @@ public class Utils {
 			isr.close();
 		}
 		return data;
+		*/
 	}
 
-	public static void waitForClose(final Window window) throws InterruptedException {
-		final Object lock = new Object();
+	//public static void waitForClose(final Window window) throws InterruptedException {
+	public static void waitForClose(final Object window) throws InterruptedException {
+		throw new UnsupportedOperationException("GWT not implemented");
+		/*final Object lock = new Object();
 
 		Thread t = new Thread() {
 			@Override
@@ -180,7 +177,7 @@ public class Utils {
 			}
 		});
 
-		t.join();
+		t.join();*/
 	}
 
 	/** Convert array of strings to string&rarr;index map. Useful for

@@ -110,6 +110,7 @@ public class Array2DHashSet<T> implements Set<T> {
 		// FULL BUCKET, expand and add to end
 		int oldLength = bucket.length;
 		bucket = Arrays.copyOf(bucket, bucket.length * 2);
+		
 		buckets[b] = bucket;
 		bucket[oldLength] = o; // add to end
 		n++;

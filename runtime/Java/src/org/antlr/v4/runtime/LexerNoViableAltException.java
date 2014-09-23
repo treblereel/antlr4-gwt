@@ -36,8 +36,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.misc.Utils;
 
-import java.util.Locale;
-
 public class LexerNoViableAltException extends RecognitionException {
 	/** Matching attempted at what input index? */
 	private final int startIndex;
@@ -77,6 +75,6 @@ public class LexerNoViableAltException extends RecognitionException {
 			symbol = Utils.escapeWhitespace(symbol, false);
 		}
 
-		return String.format(Locale.getDefault(), "%s('%s')", LexerNoViableAltException.class.getSimpleName(), symbol);
+		return LexerNoViableAltException.class.getSimpleName() + "('" + symbol + "')";
 	}
 }

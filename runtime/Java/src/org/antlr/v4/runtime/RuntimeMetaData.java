@@ -30,11 +30,11 @@
 
 package org.antlr.v4.runtime;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
-
-import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This class provides access to the current version of the ANTLR 4 runtime
@@ -237,7 +237,7 @@ public class RuntimeMetaData {
 	 * The list of listeners registered to receive notifications of mismatched
 	 * ANTLR versions.
 	 */
-	private static final Collection<Listener> listeners = new CopyOnWriteArraySet<Listener>();
+	private static final Collection<Listener> listeners =  new HashSet<Listener>();//new CopyOnWriteArraySet<Listener>();
 	static {
 		listeners.add(DefaultListener.INSTANCE);
 	}
@@ -360,11 +360,11 @@ public class RuntimeMetaData {
 		String message = null;
 		if (toolVersion != null && !VERSION.equals(toolVersion)) {
 			report = true;
-			message = String.format("ANTLR Tool version %s used for code generation does not match the current runtime version %s", toolVersion, VERSION);
+			message = "ANTLR Tool version " + toolVersion + " used for code generation does not match the current runtime version " + VERSION;
 		}
 		else if (!VERSION.equals(compileTimeVersion)) {
 			report = true;
-			message = String.format("ANTLR Runtime version %s used for parser compilation does not match the current runtime version %s", compileTimeVersion, VERSION);
+			message = "ANTLR Runtime version " + compileTimeVersion + " used for parser compilation does not match the current runtime version " + VERSION;
 		}
 
 		if (report) {

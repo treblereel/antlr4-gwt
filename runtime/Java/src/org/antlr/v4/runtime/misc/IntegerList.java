@@ -66,7 +66,9 @@ public class IntegerList {
 	}
 
 	public IntegerList(@NotNull IntegerList list) {
-		_data = list._data.clone();
+		//_data = list._data.clone();
+		System.arraycopy(list._data, 0, _data, 0, list._data.length);
+		
 		_size = list._size;
 	}
 
@@ -261,16 +263,21 @@ public class IntegerList {
 	}
 
 	public final int binarySearch(int key) {
-		return Arrays.binarySearch(_data, 0, _size, key);
+		//return Arrays.binarySearch(_data, 0, _size, key);
+		//return binarySearch(0, _size, key);
+		return Arrays.binarySearch(_data, key);
 	}
 
+	/*
 	public final int binarySearch(int fromIndex, int toIndex, int key) {
 		if (fromIndex < 0 || toIndex < 0 || fromIndex > _size || toIndex > _size) {
 			throw new IndexOutOfBoundsException();
 		}
 
-		return Arrays.binarySearch(_data, fromIndex, toIndex, key);
+		//return Arrays.binarySearch(_data, fromIndex, toIndex, key);
+		return Arrays.binarySearch(_data, key);
 	}
+	*/
 
 	private void ensureCapacity(int capacity) {
 		if (capacity < 0 || capacity > MAX_ARRAY_SIZE) {

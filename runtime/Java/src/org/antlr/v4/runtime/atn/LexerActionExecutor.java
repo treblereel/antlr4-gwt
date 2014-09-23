@@ -135,7 +135,9 @@ public class LexerActionExecutor {
 		for (int i = 0; i < lexerActions.length; i++) {
 			if (lexerActions[i].isPositionDependent() && !(lexerActions[i] instanceof LexerIndexedCustomAction)) {
 				if (updatedLexerActions == null) {
-					updatedLexerActions = lexerActions.clone();
+					//updatedLexerActions = lexerActions.clone();
+					updatedLexerActions = new LexerAction[lexerActions.length];
+					System.arraycopy(lexerActions, 0, updatedLexerActions, 0, lexerActions.length);
 				}
 
 				updatedLexerActions[i] = new LexerIndexedCustomAction(offset, lexerActions[i]);

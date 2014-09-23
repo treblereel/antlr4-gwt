@@ -184,10 +184,12 @@ public class ParserRuleContext extends RuleContext {
 
 		int j = -1; // what element have we found with ctxType?
 		for (ParseTree o : children) {
-			if ( ctxType.isInstance(o) ) {
+			//if ( ctxType.isInstance(o) ) {
+			if ( isInstance(ctxType, o) ) {
 				j++;
 				if ( j == i ) {
-					return ctxType.cast(o);
+					//return ctxType.cast(o);
+					return (T)o;
 				}
 			}
 		}
@@ -253,12 +255,14 @@ public class ParserRuleContext extends RuleContext {
 
 		List<T> contexts = null;
 		for (ParseTree o : children) {
-			if ( ctxType.isInstance(o) ) {
+			//if ( ctxType.isInstance(o) ) {
+			if ( isInstance(ctxType, o) ) {
 				if ( contexts==null ) {
 					contexts = new ArrayList<T>();
 				}
 
-				contexts.add(ctxType.cast(o));
+				//contexts.add(ctxType.cast(o));
+				contexts.add((T)o);
 			}
 		}
 
@@ -289,5 +293,16 @@ public class ParserRuleContext extends RuleContext {
                 "start=" + start +
                 ", stop=" + stop +
                 '}';
+    }
+    
+    public static boolean isInstance(Class<?> clazz, Object o) {
+        if ((clazz==null) || (o==null)) return false;
+        if (clazz.isInterface()) throw new UnsupportedOperationException();
+        Class<?> oClazz = o.getClass();
+        while (oClazz!=null) {
+            if (oClazz.equals(clazz)) return true;
+            oClazz = oClazz.getSuperclass();
+        }
+        return false;
     }
 }

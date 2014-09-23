@@ -1,20 +1,13 @@
 package org.antlr.v4.runtime.tree.xpath;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.LexerNoViableAltException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
 
 /**
  * Represent a subset of XPath XML path syntax for use in identifying nodes in
@@ -77,7 +70,8 @@ public class XPath {
 	// TODO: check for invalid token/rule names, bad syntax
 
 	public XPathElement[] split(String path) {
-		ANTLRInputStream in;
+		throw new UnsupportedOperationException("GWT not implemented");
+		/*ANTLRInputStream in;
 		try {
 			in = new ANTLRInputStream(new StringReader(path));
 		}
@@ -140,6 +134,7 @@ loop:
 			}
 		}
 		return elements.toArray(new XPathElement[0]);
+		*/
 	}
 
 	/**

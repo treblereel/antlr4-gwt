@@ -111,6 +111,6 @@ public class LexerTypeAction implements LexerAction {
 
 	@Override
 	public String toString() {
-		return String.format("type(%d)", type);
+		return "type(" + type + ")";
 	}
 }

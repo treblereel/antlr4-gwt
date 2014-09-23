@@ -63,6 +63,6 @@ public class Pair<A,B> {
 
 	@Override
 	public String toString() {
-		return String.format("(%s, %s)", a, b);
+		return "(" + a + ", " + b + ")";
 	}
 }

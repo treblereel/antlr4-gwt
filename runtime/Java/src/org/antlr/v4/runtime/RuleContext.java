@@ -29,20 +29,16 @@
  */
 package org.antlr.v4.runtime;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.Trees;
-import org.antlr.v4.runtime.tree.gui.TreeViewer;
-
-import javax.print.PrintException;
-import javax.swing.*;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Future;
 
 /** A rule context is a record of a single rule invocation. It knows
  *  which context invoked it, if any. If there is no parent context, then
@@ -154,22 +150,21 @@ public class RuleContext implements RuleNode {
 	public <T> T accept(ParseTreeVisitor<? extends T> visitor) { return visitor.visitChildren(this); }
 
 	/** Call this method to view a parse tree in a dialog box visually. */
-	public Future<JDialog> inspect(@Nullable Parser parser) {
-		List<String> ruleNames = parser != null ? Arrays.asList(parser.getRuleNames()) : null;
-		return inspect(ruleNames);
+	//public Future<JDialog> inspect(@Nullable Parser parser) {
+	public void inspect(@Nullable Parser parser) {
+		throw new UnsupportedOperationException("GWT not implement");
 	}
 
-	public Future<JDialog> inspect(@Nullable List<String> ruleNames) {
-		TreeViewer viewer = new TreeViewer(ruleNames, this);
-		return viewer.open();
+	//public Future<JDialog> inspect(@Nullable List<String> ruleNames) {
+	public void inspect(@Nullable List<String> ruleNames) {
+		throw new UnsupportedOperationException("GWT not implement");
 	}
 
 	/** Save this tree in a postscript file */
 	public void save(@Nullable Parser parser, String fileName)
-		throws IOException, PrintException
+		throws IOException
 	{
-		List<String> ruleNames = parser != null ? Arrays.asList(parser.getRuleNames()) : null;
-		save(ruleNames, fileName);
+		throw new UnsupportedOperationException("GWT not implement");
 	}
 
 	/** Save this tree in a postscript file using a particular font name and size */
@@ -183,9 +178,9 @@ public class RuleContext implements RuleNode {
 
 	/** Save this tree in a postscript file */
 	public void save(@Nullable List<String> ruleNames, String fileName)
-		throws IOException, PrintException
+		throws IOException
 	{
-		Trees.writePS(this, ruleNames, fileName);
+		throw new UnsupportedOperationException("GWT not implement");
 	}
 
 	/** Save this tree in a postscript file using a particular font name and size */
@@ -193,7 +188,8 @@ public class RuleContext implements RuleNode {
 					 String fontName, int fontSize)
 		throws IOException
 	{
-		Trees.writePS(this, ruleNames, fileName, fontName, fontSize);
+		throw new UnsupportedOperationException("GWT not implemented");
+		//Trees.writePS(this, ruleNames, fileName, fontName, fontSize);
 	}
 
 	/** Print out a whole tree, not just a node, in LISP format

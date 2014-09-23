@@ -29,13 +29,10 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.Interval;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
+
+import org.antlr.v4.runtime.misc.Interval;
 
 /**
  * Vacuum all input from a {@link Reader}/{@link InputStream} and then treat it
@@ -74,6 +71,7 @@ public class ANTLRInputStream implements CharStream {
 		this.n = numberOfActualCharsInArray;
 	}
 
+	/*
     public ANTLRInputStream(Reader r) throws IOException {
         this(r, INITIAL_BUFFER_SIZE, READ_BUFFER_SIZE);
     }
@@ -97,7 +95,9 @@ public class ANTLRInputStream implements CharStream {
 	public ANTLRInputStream(InputStream input, int initialSize, int readChunkSize) throws IOException {
 		this(new InputStreamReader(input), initialSize, readChunkSize);
 	}
+	*/
 
+	/*
 	public void load(Reader r, int size, int readChunkSize)
 		throws IOException
 	{
@@ -135,6 +135,7 @@ public class ANTLRInputStream implements CharStream {
    			r.close();
    		}
    	}
+   	*/
 
 	/** Reset the stream so that it's in the same state it was
 	 *  when the object was created *except* the data array is not

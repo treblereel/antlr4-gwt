@@ -31,3 +31,4 @@ nbactions*.xml
 
 # Playground
 #/tool/playground/
+*.orig

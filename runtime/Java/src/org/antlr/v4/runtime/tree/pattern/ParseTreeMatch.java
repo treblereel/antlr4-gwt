@@ -216,9 +216,10 @@ public class ParseTreeMatch {
 	 */
 	@Override
 	public String toString() {
-		return String.format(
-			"Match %s; found %d labels",
-			succeeded() ? "succeeded" : "failed",
-			getLabels().size());
+		return "Match " + (succeeded() ? "succeeded" : "failed") + "; found %d labels" + getLabels().size();
+//		return String.format(
+//			"Match %s; found %d labels",
+//			succeeded() ? "succeeded" : "failed",
+//			getLabels().size());
 	}
 }

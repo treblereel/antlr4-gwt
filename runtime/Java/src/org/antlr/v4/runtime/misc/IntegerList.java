@@ -29,7 +29,6 @@
  */
 package org.antlr.v4.runtime.misc;
 
-import java.lang.IllegalArgumentException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -66,7 +65,7 @@ public class IntegerList {
 		}
 	}
 
-	public IntegerList(@NotNull IntegerList list) {
+	public IntegerList(IntegerList list) {
 		//_data = list._data.clone();
 		System.arraycopy(list._data, 0, _data, 0, list._data.length);
 		

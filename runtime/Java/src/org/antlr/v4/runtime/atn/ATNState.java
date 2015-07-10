@@ -30,13 +30,12 @@
 
 package org.antlr.v4.runtime.atn;
 
-import org.antlr.v4.runtime.misc.IntervalSet;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+
+import org.antlr.v4.runtime.misc.IntervalSet;
 
 /**
  * The following images show the relation of states and

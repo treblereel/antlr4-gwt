@@ -29,8 +29,6 @@
  */
 package org.antlr.v4.runtime;
 
-import java.util.Locale;
-
 import org.antlr.v4.runtime.atn.ATNState;
 import org.antlr.v4.runtime.atn.AbstractPredicateTransition;
 import org.antlr.v4.runtime.atn.PredicateTransition;

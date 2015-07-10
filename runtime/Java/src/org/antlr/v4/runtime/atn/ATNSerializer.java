@@ -30,12 +30,6 @@
 
 package org.antlr.v4.runtime.atn;
 
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.IntegerList;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.IntervalSet;
-import org.antlr.v4.runtime.misc.Utils;
-
 import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +37,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.IntegerList;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.misc.IntervalSet;
+import org.antlr.v4.runtime.misc.Utils;
 
 public class ATNSerializer {
 	public ATN atn;
@@ -378,7 +378,8 @@ public class ATNSerializer {
 	}
 
 	public String decode(char[] data) {
-		data = data.clone();
+//		data = data.clone();
+		System.arraycopy(data, 0, data, 0, data.length);
 		// don't adjust the first value since that's the version number
 		for (int i = 1; i < data.length; i++) {
 			data[i] = (char)(data[i] - 2);

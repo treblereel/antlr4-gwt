@@ -29,10 +29,10 @@
  */
 package org.antlr.v4.runtime;
 
+import java.io.Serializable;
+
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.Pair;
-
-import java.io.Serializable;
 
 public class CommonToken implements WritableToken, Serializable {
 	/**

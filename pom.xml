@@ -7,11 +7,11 @@
     <version>9</version>
   </parent>
   <groupId>org.antlr</groupId>
-  <artifactId>antlr4-master</artifactId>
+  <artifactId>antlr4gwt-master</artifactId>
   <version>4.5.1</version>
   <packaging>pom</packaging>
 
-  <name>ANTLR 4</name>
+  <name>ANTLR 4 GWT</name>
   <description>ANTLR 4 Master Build POM</description>
   <url>http://www.antlr.org</url>
   <inceptionYear>1992</inceptionYear>
@@ -69,11 +69,12 @@
   </modules>
 
   <properties>
+  	<gwt.version>2.7.0</gwt.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <antlr.testinprocess>true</antlr.testinprocess>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
 
   <mailingLists>
@@ -94,6 +95,23 @@
     <developerConnection>scm:git:git@github.com:antlr/antlr4.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+
+  <dependencies>
+    <dependency>
+	  <groupId>com.google.gwt</groupId>
+	  <artifactId>gwt-dev</artifactId>
+	  <version>${gwt.version}</version>
+	</dependency>
+	
+	 <dependency>
+    <groupId>com.google.gwt</groupId>
+    <artifactId>gwt-user</artifactId>
+    <version>${gwt.version}</version>
+    <scope>provided</scope>
+  </dependency>
+  </dependencies>
+  
+  
 
   <build>
     <resources>

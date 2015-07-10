@@ -29,6 +29,10 @@
  */
 package org.antlr.v4.runtime;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ErrorNodeImpl;
@@ -36,10 +40,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /** A rule invocation record for parsing.
  *
@@ -175,6 +175,7 @@ public class ParserRuleContext extends RuleContext {
 		return children!=null && i>=0 && i<children.size() ? children.get(i) : null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends ParseTree> T getChild(Class<? extends T> ctxType, int i) {
 		if ( children==null || i < 0 || i >= children.size() ) {
 			return null;
@@ -246,6 +247,7 @@ public class ParserRuleContext extends RuleContext {
 		return getChild(ctxType, i);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends ParserRuleContext> List<T> getRuleContexts(Class<? extends T> ctxType) {
 		if ( children==null ) {
 			return Collections.emptyList();

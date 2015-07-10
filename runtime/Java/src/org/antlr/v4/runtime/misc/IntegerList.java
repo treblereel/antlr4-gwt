@@ -29,6 +29,7 @@
  */
 package org.antlr.v4.runtime.misc;
 
+import java.lang.IllegalArgumentException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +45,7 @@ public class IntegerList {
 	private static final int INITIAL_SIZE = 4;
 	private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
-	@NotNull
+
 	private int[] _data;
 
 	private int _size;
@@ -72,7 +73,7 @@ public class IntegerList {
 		_size = list._size;
 	}
 
-	public IntegerList(@NotNull Collection<Integer> list) {
+	public IntegerList(Collection<Integer> list) {
 		this(list.size());
 		for (Integer value : list) {
 			add(value);
@@ -103,12 +104,11 @@ public class IntegerList {
 	public final void addAll(Collection<Integer> list) {
 		ensureCapacity(_size + list.size());
 		int current = 0;
-		for (int x : list) {
-			_data[_size + current] = x;
-			current++;
-		}
-
-		_size += list.size();
+    		for (int x : list) {
+      			_data[_size + current] = x;
+      			current++;
+    		}
+    		_size += list.size();
 	}
 
 	public final int get(int index) {
@@ -268,16 +268,17 @@ public class IntegerList {
 		return Arrays.binarySearch(_data, key);
 	}
 
-	/*
 	public final int binarySearch(int fromIndex, int toIndex, int key) {
 		if (fromIndex < 0 || toIndex < 0 || fromIndex > _size || toIndex > _size) {
 			throw new IndexOutOfBoundsException();
+		}
+		if (fromIndex > toIndex) {
+        		throw new IllegalArgumentException();
 		}
 
 		//return Arrays.binarySearch(_data, fromIndex, toIndex, key);
 		return Arrays.binarySearch(_data, key);
 	}
-	*/
 
 	private void ensureCapacity(int capacity) {
 		if (capacity < 0 || capacity > MAX_ARRAY_SIZE) {

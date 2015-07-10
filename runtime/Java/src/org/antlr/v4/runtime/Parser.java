@@ -29,32 +29,33 @@
  */
 package org.antlr.v4.runtime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNDeserializationOptions;
 import org.antlr.v4.runtime.atn.ATNDeserializer;
 import org.antlr.v4.runtime.atn.ATNSimulator;
 import org.antlr.v4.runtime.atn.ATNState;
+import org.antlr.v4.runtime.atn.AmbiguityInfo;
 import org.antlr.v4.runtime.atn.ParseInfo;
 import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.atn.ProfilingATNSimulator;
 import org.antlr.v4.runtime.atn.RuleTransition;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.IntegerStack;
 import org.antlr.v4.runtime.misc.IntervalSet;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.antlr.v4.runtime.tree.pattern.ParseTreePatternMatcher;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /** This is all the parsing support code essentially; most of it is error recovery stuff. */
 public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
@@ -109,7 +110,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * @see ATNDeserializationOptions#isGenerateRuleBypassTransitions()
 	 */
 	private static final Map<String, ATN> bypassAltsAtnCache =
-		new HashMap<String, ATN>();
+		new WeakHashMap<String, ATN>();
 
 	/**
 	 * The error handling strategy for the parser. The default value is a new
@@ -118,7 +119,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * @see #getErrorHandler
 	 * @see #setErrorHandler
 	 */
-	@NotNull
+
 	protected ANTLRErrorStrategy _errHandler = new DefaultErrorStrategy();
 
 	/**
@@ -166,7 +167,6 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 *
 	 * @see #addParseListener
 	 */
-	@Nullable
 	protected List<ParseTreeListener> _parseListeners;
 
 	/**
@@ -174,6 +174,9 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * incremented each time {@link #notifyErrorListeners} is called.
 	 */
 	protected int _syntaxErrors;
+
+	/** Indicates parser has match()ed EOF token. See {@link #exitRule()}. */
+	protected boolean matchedEOF;
 
 	public Parser(TokenStream input) {
 		setInputStream(input);
@@ -185,6 +188,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 		_errHandler.reset(this);
 		_ctx = null;
 		_syntaxErrors = 0;
+		matchedEOF = false;
 		setTrace(false);
 		_precedenceStack.clear();
 		_precedenceStack.push(0);
@@ -212,10 +216,12 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * {@code ttype} and the error strategy could not recover from the
 	 * mismatched symbol
 	 */
-	@NotNull
 	public Token match(int ttype) throws RecognitionException {
 		Token t = getCurrentToken();
 		if ( t.getType()==ttype ) {
+			if ( ttype==Token.EOF ) {
+				matchedEOF = true;
+			}
 			_errHandler.reportMatch(this);
 			consume();
 		}
@@ -247,7 +253,6 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * a wildcard and the error strategy could not recover from the mismatched
 	 * symbol
 	 */
-	@NotNull
 	public Token matchWildcard() throws RecognitionException {
 		Token t = getCurrentToken();
 		if (t.getType() > 0) {
@@ -321,7 +326,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 		return getParseListeners().contains(TrimToSizeListener.INSTANCE);
 	}
 
-	@NotNull
+
 	public List<ParseTreeListener> getParseListeners() {
 		List<ParseTreeListener> listeners = _parseListeners;
 		if (listeners == null) {
@@ -360,7 +365,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 *
 	 * @throws NullPointerException if {@code} listener is {@code null}
 	 */
-	public void addParseListener(@NotNull ParseTreeListener listener) {
+	public void addParseListener(ParseTreeListener listener) {
 		if (listener == null) {
 			throw new NullPointerException("listener");
 		}
@@ -455,7 +460,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * @throws UnsupportedOperationException if the current parser does not
 	 * implement the {@link #getSerializedATN()} method.
 	 */
-	@NotNull
+
 	public ATN getATNWithBypassAlts() {
 		String serializedAtn = getSerializedATN();
 		if (serializedAtn == null) {
@@ -508,12 +513,12 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 		return m.compile(pattern, patternRuleIndex);
 	}
 
-	@NotNull
+
 	public ANTLRErrorStrategy getErrorHandler() {
 		return _errHandler;
 	}
 
-	public void setErrorHandler(@NotNull ANTLRErrorStrategy handler) {
+	public void setErrorHandler(ANTLRErrorStrategy handler) {
 		this._errHandler = handler;
 	}
 
@@ -539,17 +544,17 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
     /** Match needs to return the current input symbol, which gets put
      *  into the label for the associated token ref; e.g., x=ID.
      */
-	@NotNull
+
     public Token getCurrentToken() {
 		return _input.LT(1);
 	}
 
-	public final void notifyErrorListeners(@NotNull String msg)	{
+	public final void notifyErrorListeners(String msg)	{
 		notifyErrorListeners(getCurrentToken(), msg, null);
 	}
 
-	public void notifyErrorListeners(@NotNull Token offendingToken, @NotNull String msg,
-									 @Nullable RecognitionException e)
+	public void notifyErrorListeners(Token offendingToken, String msg,
+									 RecognitionException e)
 	{
 		_syntaxErrors++;
 		int line = -1;
@@ -621,7 +626,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 * Always called by generated parsers upon entry to a rule. Access field
 	 * {@link #_ctx} get the current context.
 	 */
-	public void enterRule(@NotNull ParserRuleContext localctx, int state, int ruleIndex) {
+	public void enterRule(ParserRuleContext localctx, int state, int ruleIndex) {
 		setState(state);
 		_ctx = localctx;
 		_ctx.start = _input.LT(1);
@@ -630,7 +635,13 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	}
 
     public void exitRule() {
-		_ctx.stop = _input.LT(-1);
+		if ( matchedEOF ) {
+			// if we have matched EOF, it cannot consume past EOF so we use LT(1) here
+			_ctx.stop = _input.LT(1); // LT(1) will be end of file
+		}
+		else {
+			_ctx.stop = _input.LT(-1); // stop node is what we just matched
+		}
         // trigger event on _ctx, before it reverts to parent
         if ( _parseListeners != null) triggerExitRuleEvent();
 		setState(_ctx.invokingState);
@@ -683,8 +694,8 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 		}
 	}
 
-	/**
-	 * Like {@link #enterRule} but for recursive rules.
+	/** Like {@link #enterRule} but for recursive rules.
+	 *  Make the current context the child of the incoming localctx.
 	 */
 	public void pushNewRecursionContext(ParserRuleContext localctx, int state, int ruleIndex) {
 		ParserRuleContext previous = _ctx;
@@ -746,7 +757,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	}
 
 	@Override
-	public boolean precpred(@Nullable RuleContext localctx, int precedence) {
+	public boolean precpred(RuleContext localctx, int precedence) {
 		return precedence >= _precedenceStack.peek();
 	}
 
@@ -799,6 +810,10 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
         return false;
     }
 
+	public boolean isMatchedEOF() {
+		return matchedEOF;
+	}
+
 	/**
 	 * Computes the set of input symbols which could follow the current parser
 	 * state and context, as given by {@link #getState} and {@link #getContext},
@@ -806,12 +821,11 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 *
 	 * @see ATN#getExpectedTokens(int, RuleContext)
 	 */
-	@NotNull
 	public IntervalSet getExpectedTokens() {
 		return getATN().getExpectedTokens(getState(), getContext());
 	}
 
-	@NotNull
+
     public IntervalSet getExpectedTokensWithinCurrentRule() {
         ATN atn = getInterpreter().atn;
         ATNState s = atn.states.get(getState());
@@ -851,7 +865,7 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 		return stack;
 	}
 
-    /** For debugging and other purposes. */
+	/** For debugging and other purposes. */
 	public List<String> getDFAStrings() {
 		synchronized (_interp.decisionToDFA) {
 			List<String> s = new ArrayList<String>();
@@ -897,14 +911,18 @@ public abstract class Parser extends Recognizer<Token, ParserATNSimulator> {
 	 */
 	public void setProfile(boolean profile) {
 		ParserATNSimulator interp = getInterpreter();
+		PredictionMode saveMode = interp.getPredictionMode();
 		if ( profile ) {
-			if (!(interp instanceof ProfilingATNSimulator)) {
+			if ( !(interp instanceof ProfilingATNSimulator) ) {
 				setInterpreter(new ProfilingATNSimulator(this));
 			}
 		}
-		else if (interp instanceof ProfilingATNSimulator) {
-			setInterpreter(new ParserATNSimulator(this, getATN(), interp.decisionToDFA, interp.getSharedContextCache()));
+		else if ( interp instanceof ProfilingATNSimulator ) {
+			ParserATNSimulator sim =
+				new ParserATNSimulator(this, getATN(), interp.decisionToDFA, interp.getSharedContextCache());
+			setInterpreter(sim);
 		}
+		getInterpreter().setPredictionMode(saveMode);
 	}
 
 	/** During a parse is sometimes useful to listen in on the rule entry and exit

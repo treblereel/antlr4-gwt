@@ -32,7 +32,8 @@ package org.antlr.v4.runtime.atn;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.NotNull;
+
+import java.util.BitSet;
 
 /**
  * This class represents profiling event information for an ambiguity.
@@ -64,6 +65,9 @@ import org.antlr.v4.runtime.misc.NotNull;
  * @since 4.3
  */
 public class AmbiguityInfo extends DecisionEventInfo {
+	/** The set of alternative numbers for this decision event that lead to a valid parse. */
+	public BitSet ambigAlts;
+
 	/**
 	 * Constructs a new instance of the {@link AmbiguityInfo} class with the
 	 * specified detailed ambiguity information.
@@ -71,6 +75,8 @@ public class AmbiguityInfo extends DecisionEventInfo {
 	 * @param decision The decision number
 	 * @param configs The final configuration set identifying the ambiguous
 	 * alternatives for the current input
+	 * @param ambigAlts The set of alternatives in the decision that lead to a valid parse.
+	 *                  The predicted alt is the min(ambigAlts)
 	 * @param input The input token stream
 	 * @param startIndex The start index for the current prediction
 	 * @param stopIndex The index at which the ambiguity was identified during
@@ -79,9 +85,13 @@ public class AmbiguityInfo extends DecisionEventInfo {
 	 * prediction; otherwise, {@code false} if the ambiguity was identified
 	 * during SLL prediction
 	 */
-	public AmbiguityInfo(int decision, @NotNull ATNConfigSet configs, @NotNull TokenStream input,
-						 int startIndex, int stopIndex, boolean fullCtx)
+	public AmbiguityInfo(int decision,
+						 ATNConfigSet configs,
+						 BitSet ambigAlts,
+						 TokenStream input, int startIndex, int stopIndex,
+						 boolean fullCtx)
 	{
 		super(decision, configs, input, startIndex, stopIndex, fullCtx);
+		this.ambigAlts = ambigAlts;
 	}
 }

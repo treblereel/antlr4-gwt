@@ -34,10 +34,9 @@ import org.abego.treelayout.NodeExtentProvider;
 import org.abego.treelayout.TreeForTreeLayout;
 import org.abego.treelayout.TreeLayout;
 import org.abego.treelayout.util.DefaultConfiguration;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.GraphicsSupport;
 import org.antlr.v4.runtime.misc.JFileChooserConfirmOverwrite;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.misc.Utils;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.Tree;
@@ -45,21 +44,7 @@ import org.antlr.v4.runtime.tree.Trees;
 
 import javax.imageio.ImageIO;
 import javax.print.PrintException;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -68,21 +53,12 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -95,6 +71,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.prefs.Preferences;
 
 public class TreeViewer extends JComponent {
 	public static final Color LIGHT_RED = new Color(244, 213, 211);
@@ -102,7 +79,7 @@ public class TreeViewer extends JComponent {
 	public static class DefaultTreeTextProvider implements TreeTextProvider {
 		private final List<String> ruleNames;
 
-		public DefaultTreeTextProvider(@Nullable List<String> ruleNames) {
+		public DefaultTreeTextProvider(List<String> ruleNames) {
 			this.ruleNames = ruleNames;
 		}
 
@@ -158,7 +135,7 @@ public class TreeViewer extends JComponent {
 	protected Color borderColor = null;
 	protected Color textColor = Color.black;
 
-	public TreeViewer(@Nullable List<String> ruleNames, Tree tree) {
+	public TreeViewer(List<String> ruleNames, Tree tree) {
 		setRuleNames(ruleNames);
 		if ( tree!=null ) {
 			setTree(tree);
@@ -220,11 +197,18 @@ public class TreeViewer extends JComponent {
 	protected void paintBox(Graphics g, Tree tree) {
 		Rectangle2D.Double box = getBoundsOfNode(tree);
 		// draw the box in the background
+		boolean ruleFailedAndMatchedNothing = false;
+		if ( tree instanceof ParserRuleContext ) {
+			ParserRuleContext ctx = (ParserRuleContext) tree;
+			ruleFailedAndMatchedNothing = ctx.exception != null &&
+										  ctx.stop != null && ctx.stop.getTokenIndex() < ctx.start.getTokenIndex();
+		}
 		if ( isHighlighted(tree) || boxColor!=null ||
-			 tree instanceof ErrorNode )
+			 tree instanceof ErrorNode ||
+			 ruleFailedAndMatchedNothing)
 		{
 			if ( isHighlighted(tree) ) g.setColor(highlightedBoxColor);
-			else if ( tree instanceof ErrorNode ) g.setColor(LIGHT_RED);
+			else if ( tree instanceof ErrorNode || ruleFailedAndMatchedNothing ) g.setColor(LIGHT_RED);
 			else g.setColor(boxColor);
 			g.fillRoundRect((int) box.x, (int) box.y, (int) box.width - 1,
 							(int) box.height - 1, arcSize, arcSize);
@@ -295,10 +279,19 @@ public class TreeViewer extends JComponent {
 
 	// ----------------------------------------------------------------------
 
-	@NotNull
+
+    private static final String DIALOG_WIDTH_PREFS_KEY          = "dialog_width";
+    private static final String DIALOG_HEIGHT_PREFS_KEY         = "dialog_height";
+    private static final String DIALOG_X_PREFS_KEY              = "dialog_x";
+    private static final String DIALOG_Y_PREFS_KEY              = "dialog_y";
+    private static final String DIALOG_DIVIDER_LOC_PREFS_KEY    = "dialog_divider_location";
+    private static final String DIALOG_VIEWER_SCALE_PREFS_KEY   = "dialog_viewer_scale";
+
 	protected static JDialog showInDialog(final TreeViewer viewer) {
 		final JDialog dialog = new JDialog();
 		dialog.setTitle("Parse Tree Inspector");
+
+        final Preferences prefs = Preferences.userNodeForPackage(TreeViewer.class);
 
 		// Make new content panes
 		final Container mainPane = new JPanel(new BorderLayout(5,5));
@@ -321,15 +314,14 @@ public class TreeViewer extends JComponent {
 			new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					dialog.setVisible(false);
-					dialog.dispose();
+                    dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 				}
 			}
 		);
 		wrapper.add(ok);
 
 		// Add an export-to-png button right of the "OK" button
-		JButton png = new JButton("png");
+		JButton png = new JButton("Export as PNG");
 		png.addActionListener(
 			new ActionListener() {
 				@Override
@@ -343,9 +335,12 @@ public class TreeViewer extends JComponent {
 		bottomPanel.add(wrapper, BorderLayout.SOUTH);
 
 		// Add scale slider
-		int sliderValue = (int) ((viewer.getScale()-1.0) * 1000);
-		final JSlider scaleSlider = new JSlider(JSlider.HORIZONTAL,
-										  -999,1000,sliderValue);
+        double lastKnownViewerScale = prefs.getDouble(DIALOG_VIEWER_SCALE_PREFS_KEY, viewer.getScale());
+        viewer.setScale(lastKnownViewerScale);
+
+		int sliderValue = (int) ((lastKnownViewerScale - 1.0) * 1000);
+		final JSlider scaleSlider = new JSlider(JSlider.HORIZONTAL, -999, 1000, sliderValue);
+
 		scaleSlider.addChangeListener(
 			new ChangeListener() {
 				@Override
@@ -389,7 +384,7 @@ public class TreeViewer extends JComponent {
 		treePanel.add(new JScrollPane(tree));
 
 		// Create the pane for both the JTree and the AST
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+		final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				treePanel, contentPane);
 
 		mainPane.add(splitPane, BorderLayout.CENTER);
@@ -397,14 +392,41 @@ public class TreeViewer extends JComponent {
 		dialog.setContentPane(mainPane);
 
 		// make viz
-		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dialog.setPreferredSize(new Dimension(600, 500));
+        WindowListener exitListener = new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                prefs.putInt(DIALOG_WIDTH_PREFS_KEY, (int) dialog.getSize().getWidth());
+                prefs.putInt(DIALOG_HEIGHT_PREFS_KEY, (int) dialog.getSize().getHeight());
+                prefs.putDouble(DIALOG_X_PREFS_KEY, dialog.getLocationOnScreen().getX());
+                prefs.putDouble(DIALOG_Y_PREFS_KEY, dialog.getLocationOnScreen().getY());
+                prefs.putInt(DIALOG_DIVIDER_LOC_PREFS_KEY, splitPane.getDividerLocation());
+                prefs.putDouble(DIALOG_VIEWER_SCALE_PREFS_KEY, viewer.getScale());
+
+                dialog.setVisible(false);
+                dialog.dispose();
+            }
+        };
+        dialog.addWindowListener(exitListener);
+		dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        int width = prefs.getInt(DIALOG_WIDTH_PREFS_KEY, 600);
+        int height = prefs.getInt(DIALOG_HEIGHT_PREFS_KEY, 500);
+		dialog.setPreferredSize(new Dimension(width, height));
 		dialog.pack();
 
-		// After pack(): set the divider at 1/3 of the frame.
-		splitPane.setDividerLocation(0.33);
+		// After pack(): set the divider at 1/3 (200/600) of the frame.
+        int dividerLocation = prefs.getInt(DIALOG_DIVIDER_LOC_PREFS_KEY, 200);
+		splitPane.setDividerLocation(dividerLocation);
 
-		dialog.setLocationRelativeTo(null);
+        if (prefs.getDouble(DIALOG_X_PREFS_KEY, -1) != -1) {
+            dialog.setLocation(
+                    (int)prefs.getDouble(DIALOG_X_PREFS_KEY, 100),
+                    (int)prefs.getDouble(DIALOG_Y_PREFS_KEY, 100)
+            );
+        }
+        else {
+            dialog.setLocationRelativeTo(null);
+        }
+
 		dialog.setVisible(true);
 		return dialog;
 	}
@@ -513,7 +535,7 @@ public class TreeViewer extends JComponent {
 		return scaledTreeSize;
 	}
 
-	@NotNull
+
 	public Future<JDialog> open() {
 		final TreeViewer viewer = this;
 		viewer.setScale(1.5);
@@ -673,7 +695,7 @@ public class TreeViewer extends JComponent {
 		if ( root!=null ) {
 			boolean useIdentity = true; // compare node identity
 			this.treeLayout =
-				new TreeLayout<Tree>(new TreeLayoutAdaptor(root),
+				new TreeLayout<Tree>(getTreeLayoutAdaptor(root),
 									 new TreeViewer.VariableExtentProvide(this),
 									 new DefaultConfiguration<Tree>(gapBetweenLevels,
 																	gapBetweenNodes),
@@ -685,6 +707,12 @@ public class TreeViewer extends JComponent {
 			this.treeLayout = null;
 			repaint();
 		}
+	}
+
+	/** Get an adaptor for root that indicates how to walk ANTLR trees.
+	 *  Override to change the adapter from the default of {@link TreeLayoutAdaptor}  */
+	public TreeForTreeLayout<Tree> getTreeLayoutAdaptor(Tree root) {
+		return new TreeLayoutAdaptor(root);
 	}
 
 	public double getScale() {

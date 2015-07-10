@@ -35,7 +35,6 @@ import org.antlr.v4.runtime.atn.ATNType;
 import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Collection;
 
@@ -48,7 +47,7 @@ public class LexerInterpreter extends Lexer {
 	protected final String[] ruleNames;
 	protected final String[] modeNames;
 
-	@NotNull
+
 	private final Vocabulary vocabulary;
 
 	protected final DFA[] _decisionToDFA;
@@ -60,7 +59,7 @@ public class LexerInterpreter extends Lexer {
 		this(grammarFileName, VocabularyImpl.fromTokenNames(tokenNames.toArray(new String[tokenNames.size()])), ruleNames, modeNames, atn, input);
 	}
 
-	public LexerInterpreter(String grammarFileName, @NotNull Vocabulary vocabulary, Collection<String> ruleNames, Collection<String> modeNames, ATN atn, CharStream input) {
+	public LexerInterpreter(String grammarFileName, Vocabulary vocabulary, Collection<String> ruleNames, Collection<String> modeNames, ATN atn, CharStream input) {
 		super(input);
 
 		if (atn.grammarType != ATNType.LEXER) {

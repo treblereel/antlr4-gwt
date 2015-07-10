@@ -30,16 +30,15 @@
 
 package org.antlr.v4.runtime.atn;
 
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.IntervalSet;
+import org.antlr.v4.runtime.misc.Pair;
+
 import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
-
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.IntervalSet;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
-import org.antlr.v4.runtime.misc.Pair;
 
 /**
  *
@@ -95,14 +94,14 @@ public class ATNDeserializer {
 		SERIALIZED_UUID = ADDED_LEXER_ACTIONS;
 	}
 
-	@NotNull
+
 	private final ATNDeserializationOptions deserializationOptions;
 
 	public ATNDeserializer() {
 		this(ATNDeserializationOptions.getDefaultOptions());
 	}
 
-	public ATNDeserializer(@Nullable ATNDeserializationOptions deserializationOptions) {
+	public ATNDeserializer(ATNDeserializationOptions deserializationOptions) {
 		if (deserializationOptions == null) {
 			deserializationOptions = ATNDeserializationOptions.getDefaultOptions();
 		}
@@ -133,12 +132,8 @@ public class ATNDeserializer {
 	}
 
 	@SuppressWarnings("deprecation")
-	public ATN deserialize(@NotNull char[] data) {
-		//data = data.clone();
-		
-		//data = TabCloner.clone(data);
-		System.arraycopy(data, 0, data, 0, data.length);
-		
+	public ATN deserialize(char[] data) {
+		data = data.clone();
 		// don't adjust the first value since that's the version number
 		for (int i = 1; i < data.length; i++) {
 			data[i] = (char)(data[i] - 2);
@@ -215,7 +210,7 @@ public class ATNDeserializer {
 			int numPrecedenceStates = toInt(data[p++]);
 			for (int i = 0; i < numPrecedenceStates; i++) {
 				int stateNumber = toInt(data[p++]);
-				((RuleStartState)atn.states.get(stateNumber)).isPrecedenceRule = true;
+				((RuleStartState)atn.states.get(stateNumber)).isLeftRecursiveRule = true;
 			}
 		}
 
@@ -244,9 +239,6 @@ public class ATNDeserializer {
 					// this piece of unused metadata was serialized prior to the
 					// addition of LexerAction
 					int actionIndexIgnored = toInt(data[p++]);
-					if (actionIndexIgnored == 0xFFFF) {
-						actionIndexIgnored = -1;
-					}
 				}
 			}
 		}
@@ -324,7 +316,7 @@ public class ATNDeserializer {
 
 				RuleTransition ruleTransition = (RuleTransition)t;
 				int outermostPrecedenceReturn = -1;
-				if (atn.ruleToStartState[ruleTransition.target.ruleIndex].isPrecedenceRule) {
+				if (atn.ruleToStartState[ruleTransition.target.ruleIndex].isLeftRecursiveRule) {
 					if (ruleTransition.precedence == 0) {
 						outermostPrecedenceReturn = ruleTransition.target.ruleIndex;
 					}
@@ -456,7 +448,7 @@ public class ATNDeserializer {
 
 				ATNState endState;
 				Transition excludeTransition = null;
-				if (atn.ruleToStartState[i].isPrecedenceRule) {
+				if (atn.ruleToStartState[i].isLeftRecursiveRule) {
 					// wrap from the beginning of the rule to the StarLoopEntryState
 					endState = null;
 					for (ATNState state : atn.states) {
@@ -529,12 +521,12 @@ public class ATNDeserializer {
 
 	/**
 	 * Analyze the {@link StarLoopEntryState} states in the specified ATN to set
-	 * the {@link StarLoopEntryState#precedenceRuleDecision} field to the
+	 * the {@link StarLoopEntryState#isPrecedenceDecision} field to the
 	 * correct value.
 	 *
 	 * @param atn The ATN.
 	 */
-	protected void markPrecedenceDecisions(@NotNull ATN atn) {
+	protected void markPrecedenceDecisions(ATN atn) {
 		for (ATNState state : atn.states) {
 			if (!(state instanceof StarLoopEntryState)) {
 				continue;
@@ -544,11 +536,11 @@ public class ATNDeserializer {
 			 * decision for the closure block that determines whether a
 			 * precedence rule should continue or complete.
 			 */
-			if (atn.ruleToStartState[state.ruleIndex].isPrecedenceRule) {
+			if (atn.ruleToStartState[state.ruleIndex].isLeftRecursiveRule) {
 				ATNState maybeLoopEndState = state.transition(state.getNumberOfTransitions() - 1).target;
 				if (maybeLoopEndState instanceof LoopEndState) {
 					if (maybeLoopEndState.epsilonOnlyTransitions && maybeLoopEndState.transition(0).target instanceof RuleStopState) {
-						((StarLoopEntryState)state).precedenceRuleDecision = true;
+						((StarLoopEntryState)state).isPrecedenceDecision = true;
 					}
 				}
 			}
@@ -646,8 +638,8 @@ public class ATNDeserializer {
 		return new UUID(mostSigBits, leastSigBits);
 	}
 
-	@NotNull
-	protected Transition edgeFactory(@NotNull ATN atn,
+
+	protected Transition edgeFactory(ATN atn,
 										 int type, int src, int trg,
 										 int arg1, int arg2, int arg3,
 										 List<IntervalSet> sets)

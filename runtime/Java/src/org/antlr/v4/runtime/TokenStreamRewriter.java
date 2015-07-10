@@ -30,7 +30,6 @@
 package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +92,7 @@ import java.util.Map;
  * ...
  * rewriter.insertAfter(t, "text to put after t");}
  * rewriter.insertAfter(u, "text after u");}
- * System.out.println(tokens.toString());
+ * System.out.println(rewriter.getText());
  * </pre>
  *
  * <p>
@@ -103,10 +102,10 @@ import java.util.Map;
  * a C file and also its header file--all from the same buffer:</p>
  *
  * <pre>
- * tokens.insertAfter("pass1", t, "text to put after t");}
- * tokens.insertAfter("pass2", u, "text after u");}
- * System.out.println(tokens.toString("pass1"));
- * System.out.println(tokens.toString("pass2"));
+ * rewriter.insertAfter("pass1", t, "text to put after t");}
+ * rewriter.insertAfter("pass2", u, "text after u");}
+ * System.out.println(rewriter.getText("pass1"));
+ * System.out.println(rewriter.getText("pass2"));
  * </pre>
  *
  * <p>
@@ -294,7 +293,7 @@ public class TokenStreamRewriter {
 		replace(DEFAULT_PROGRAM_NAME, from, to, text);
 	}
 
-	public void replace(String programName, int from, int to, @Nullable Object text) {
+	public void replace(String programName, int from, int to, Object text) {
 		if ( from > to || from<0 || to<0 || to >= tokens.size() ) {
 			throw new IllegalArgumentException("replace: range invalid: "+from+".."+to+"(size="+tokens.size()+")");
 		}
@@ -304,7 +303,7 @@ public class TokenStreamRewriter {
 		rewrites.add(op);
 	}
 
-	public void replace(String programName, Token from, Token to, @Nullable Object text) {
+	public void replace(String programName, Token from, Token to, Object text) {
 		replace(programName,
 				from.getTokenIndex(),
 				to.getTokenIndex(),
@@ -370,6 +369,13 @@ public class TokenStreamRewriter {
  	 */
 	public String getText() {
 		return getText(DEFAULT_PROGRAM_NAME, Interval.of(0,tokens.size()-1));
+	}
+
+	/** Return the text from the original tokens altered per the
+	 *  instructions given to this rewriter in programName.
+ 	 */
+	public String getText(String programName) {
+		return getText(programName, Interval.of(0,tokens.size()-1));
 	}
 
 	/** Return the text associated with the tokens in the interval from the

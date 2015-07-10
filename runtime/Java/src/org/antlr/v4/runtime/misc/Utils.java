@@ -30,7 +30,17 @@
 
 package org.antlr.v4.runtime.misc;
 
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,13 +97,14 @@ public class Utils {
 		return buf.toString();
 	}
 
-	public static void writeFile(@NotNull String fileName, @NotNull String content) throws IOException {
+	public static void writeFile(String fileName, String content) throws IOException {
 		writeFile(fileName, content, null);
 	}
 
-	public static void writeFile(@NotNull String fileName, @NotNull String content, @Nullable String encoding) throws IOException {
-		throw new UnsupportedOperationException("GWT not implemented");
-		/*File f = new File(fileName);
+	public static void writeFile(String fileName, String content, String encoding) throws IOException {
+		hrow new UnsupportedOperationException("GWT not implemented");
+		/*		
+		File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
 		OutputStreamWriter osw;
 		if (encoding != null) {
@@ -111,13 +122,12 @@ public class Utils {
 		}*/
 	}
 
-	@NotNull
-	public static char[] readFile(@NotNull String fileName) throws IOException {
+
+	public static char[] readFile(String fileName) throws IOException {
 		return readFile(fileName, null);
 	}
 
-	@NotNull
-	public static char[] readFile(@NotNull String fileName, @Nullable String encoding) throws IOException {
+	public static char[] readFile(String fileName, String encoding) throws IOException {
 		throw new UnsupportedOperationException("GWT not implemented");
 		/*
 		File f = new File(fileName);
@@ -197,5 +207,15 @@ public class Utils {
 			cdata[i] = (char)data.get(i);
 		}
 		return cdata;
+	}
+
+	public static IntervalSet toSet(BitSet bits) {
+		IntervalSet s = new IntervalSet();
+		int i = bits.nextSetBit(0);
+		while ( i >= 0 ) {
+			s.add(i);
+			i = bits.nextSetBit(i+1);
+		}
+		return s;
 	}
 }

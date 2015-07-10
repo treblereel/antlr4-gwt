@@ -29,9 +29,6 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
-
 /**
  * This interface provides information about the vocabulary used by a
  * recognizer.
@@ -40,7 +37,6 @@ import org.antlr.v4.runtime.misc.Nullable;
  * @author Sam Harwell
  */
 public interface Vocabulary {
-
 	/**
 	 * Gets the string literal associated with a token type. The string returned
 	 * by this method, when not {@code null}, can be used unaltered in a parser
@@ -77,7 +73,6 @@ public interface Vocabulary {
 	 * @return The string literal associated with the specified token type, or
 	 * {@code null} if no string literal is associated with the type.
 	 */
-	@Nullable
 	String getLiteralName(int tokenType);
 
 	/**
@@ -123,7 +118,6 @@ public interface Vocabulary {
 	 * @return The symbolic name associated with the specified token type, or
 	 * {@code null} if no symbolic name is associated with the type.
 	 */
-	@Nullable
 	String getSymbolicName(int tokenType);
 
 	/**
@@ -146,7 +140,5 @@ public interface Vocabulary {
 	 * @return The display name of the token type, for use in error reporting or
 	 * other user-visible messages which reference specific token types.
 	 */
-	@NotNull
 	String getDisplayName(int tokenType);
-
 }

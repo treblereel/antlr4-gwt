@@ -29,9 +29,6 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
-
 /**
  * A source of tokens must provide a sequence of tokens via {@link #nextToken()}
  * and also must reveal it's source of characters; {@link CommonToken}'s text is
@@ -54,7 +51,6 @@ public interface TokenSource {
 	 * on the characters until you get a good one; errors are not passed through
 	 * to the parser.
 	 */
-	@NotNull
 	public Token nextToken();
 
 	/**
@@ -83,7 +79,6 @@ public interface TokenSource {
 	 * the input, or {@code null} if no input stream is available for the token
 	 * source.
 	 */
-	@Nullable
 	public CharStream getInputStream();
 
 	/**
@@ -100,7 +95,7 @@ public interface TokenSource {
 	 *
 	 * @param factory The {@link TokenFactory} to use for creating tokens.
 	 */
-	public void setTokenFactory(@NotNull TokenFactory<?> factory);
+	public void setTokenFactory(TokenFactory<?> factory);
 
 	/**
 	 * Gets the {@link TokenFactory} this token source is currently using for
@@ -108,6 +103,5 @@ public interface TokenSource {
 	 *
 	 * @return The {@link TokenFactory} currently used by this token source.
 	 */
-	@NotNull
 	public TokenFactory<?> getTokenFactory();
 }

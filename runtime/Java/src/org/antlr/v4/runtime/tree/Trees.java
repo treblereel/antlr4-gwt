@@ -30,24 +30,30 @@
 
 package org.antlr.v4.runtime.tree;
 
+import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.misc.Predicate;
+import org.antlr.v4.runtime.misc.Utils;
+import org.antlr.v4.runtime.tree.gui.TreePostScriptGenerator;
+import org.antlr.v4.runtime.tree.gui.TreeTextProvider;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
-import org.antlr.v4.runtime.misc.Utils;
-
 /** A set of utility routines useful for all kinds of ANTLR trees. */
 public class Trees {
 
 	/*
-	public static String getPS(Tree t, @Nullable List<String> ruleNames,
+	public static String getPS(Tree t, List<String> ruleNames,
 							   String fontName, int fontSize)
 	{
 		TreePostScriptGenerator psgen =
@@ -55,12 +61,11 @@ public class Trees {
 		return psgen.getPS();
 	}
 
-	public static String getPS(Tree t, @Nullable List<String> ruleNames) {
+	public static String getPS(Tree t, List<String> ruleNames) {
 		return getPS(t, ruleNames, "Helvetica", 11);
 	}
-	
 
-	public static void writePS(Tree t, @Nullable List<String> ruleNames,
+	public static void writePS(Tree t, List<String> ruleNames,
 							   String fileName,
 							   String fontName, int fontSize)
 		throws IOException
@@ -76,7 +81,7 @@ public class Trees {
 		}
 	}
 
-	public static void writePS(Tree t, @Nullable List<String> ruleNames, String fileName)
+	public static void writePS(Tree t, List<String> ruleNames, String fileName)
 		throws IOException
 	{
 		writePS(t, ruleNames, fileName, "Helvetica", 11);
@@ -87,7 +92,7 @@ public class Trees {
 	 *  node payloads to get the text for the nodes.  Detect
 	 *  parse trees and extract data appropriately.
 	 */
-	public static String toStringTree(@NotNull Tree t) {
+	public static String toStringTree(Tree t) {
 		return toStringTree(t, (List<String>)null);
 	}
 
@@ -95,39 +100,53 @@ public class Trees {
 	 *  node payloads to get the text for the nodes.  Detect
 	 *  parse trees and extract data appropriately.
 	 */
-	public static String toStringTree(@NotNull Tree t, @Nullable Parser recog) {
+	public static String toStringTree(Tree t, Parser recog) {
 		String[] ruleNames = recog != null ? recog.getRuleNames() : null;
 		List<String> ruleNamesList = ruleNames != null ? Arrays.asList(ruleNames) : null;
 		return toStringTree(t, ruleNamesList);
 	}
 
-	/** Print out a whole tree in LISP form. {@link #getNodeText} is used on the
-	 *  node payloads to get the text for the nodes.  Detect
-	 *  parse trees and extract data appropriately.
+	/** Print out a whole tree in LISP form. Arg nodeTextProvider is used on the
+	 *  node payloads to get the text for the nodes.
+	 *
+	 *  @since 4.5.1
 	 */
-	public static String toStringTree(@NotNull Tree t, @Nullable List<String> ruleNames) {
-		String s = Utils.escapeWhitespace(getNodeText(t, ruleNames), false);
+	public static String toStringTree(Tree t, TreeTextProvider nodeTextProvider) {
+		if ( t==null ) return "null";
+		String s = Utils.escapeWhitespace(nodeTextProvider.getText(t), false);
 		if ( t.getChildCount()==0 ) return s;
 		StringBuilder buf = new StringBuilder();
 		buf.append("(");
-		s = Utils.escapeWhitespace(getNodeText(t, ruleNames), false);
+		s = Utils.escapeWhitespace(nodeTextProvider.getText(t), false);
 		buf.append(s);
 		buf.append(' ');
 		for (int i = 0; i<t.getChildCount(); i++) {
 			if ( i>0 ) buf.append(' ');
-			buf.append(toStringTree(t.getChild(i), ruleNames));
+			buf.append(toStringTree(t.getChild(i), nodeTextProvider));
 		}
 		buf.append(")");
 		return buf.toString();
 	}
 
-	public static String getNodeText(@NotNull Tree t, @Nullable Parser recog) {
+	/** Print out a whole tree in LISP form. {@link #getNodeText} is used on the
+	 *  node payloads to get the text for the nodes.
+	 */
+	public static String toStringTree(final Tree t, final List<String> ruleNames) {
+		return toStringTree(t, new TreeTextProvider() {
+			@Override
+			public String getText(Tree node) {
+				return getNodeText(node, ruleNames);
+			}
+		});
+	}
+
+	public static String getNodeText(Tree t, Parser recog) {
 		String[] ruleNames = recog != null ? recog.getRuleNames() : null;
 		List<String> ruleNamesList = ruleNames != null ? Arrays.asList(ruleNames) : null;
 		return getNodeText(t, ruleNamesList);
 	}
 
-	public static String getNodeText(@NotNull Tree t, @Nullable List<String> ruleNames) {
+	public static String getNodeText(Tree t, List<String> ruleNames) {
 		if ( ruleNames!=null ) {
 			if ( t instanceof RuleNode ) {
 				int ruleIndex = ((RuleNode)t).getRuleContext().getRuleIndex();
@@ -153,7 +172,6 @@ public class Trees {
 		return t.getPayload().toString();
 	}
 
-
 	/** Return ordered list of all children of this node */
 	public static List<Tree> getChildren(Tree t) {
 		List<Tree> kids = new ArrayList<Tree>();
@@ -165,9 +183,10 @@ public class Trees {
 
 	/** Return a list of all ancestors of this node.  The first node of
 	 *  list is the root and the last is the parent of this node.
+	 *
+	 *  @since 4.5.1
 	 */
-	@NotNull
-	public static List<? extends Tree> getAncestors(@NotNull Tree t) {
+	public static List<? extends Tree> getAncestors(Tree t) {
 		if ( t.getParent()==null ) return Collections.emptyList();
 		List<Tree> ancestors = new ArrayList<Tree>();
 		t = t.getParent();
@@ -176,6 +195,21 @@ public class Trees {
 			t = t.getParent();
 		}
 		return ancestors;
+	}
+
+	/** Return true if t is u's parent or a node on path to root from u.
+	 *  Use == not equals().
+	 *
+	 *  @since 4.5.1
+	 */
+	public static boolean isAncestorOf(Tree t, Tree u) {
+		if ( t==null || u==null || t.getParent()==null ) return false;
+		Tree p = u.getParent();
+		while ( p!=null ) {
+			if ( t == p ) return true;
+			p = p.getParent();
+		}
+		return false;
 	}
 
 	public static Collection<ParseTree> findAllTokenNodes(ParseTree t, int ttype) {
@@ -210,15 +244,92 @@ public class Trees {
 		}
 	}
 
-	public static List<ParseTree> descendants(ParseTree t){
+	/** Get all descendents; includes t itself.
+	 *
+	 * @since 4.5.1
+ 	 */
+	public static List<ParseTree> getDescendants(ParseTree t) {
 		List<ParseTree> nodes = new ArrayList<ParseTree>();
 		nodes.add(t);
 
 		int n = t.getChildCount();
 		for (int i = 0 ; i < n ; i++){
-			nodes.addAll(descendants(t.getChild(i)));
+			nodes.addAll(getDescendants(t.getChild(i)));
 		}
 		return nodes;
+	}
+
+	/** @deprecated */
+	public static List<ParseTree> descendants(ParseTree t) {
+		return getDescendants(t);
+	}
+
+	/** Find smallest subtree of t enclosing range startTokenIndex..stopTokenIndex
+	 *  inclusively using postorder traversal.  Recursive depth-first-search.
+	 *
+	 *  @since 4.5.1
+	 */
+	public static ParserRuleContext getRootOfSubtreeEnclosingRegion(ParseTree t,
+																	int startTokenIndex, // inclusive
+																	int stopTokenIndex)  // inclusive
+	{
+		int n = t.getChildCount();
+		for (int i = 0; i<n; i++) {
+			ParseTree child = t.getChild(i);
+			ParserRuleContext r = getRootOfSubtreeEnclosingRegion(child, startTokenIndex, stopTokenIndex);
+			if ( r!=null ) return r;
+		}
+		if ( t instanceof ParserRuleContext ) {
+			ParserRuleContext r = (ParserRuleContext) t;
+			if ( startTokenIndex>=r.getStart().getTokenIndex() && // is range fully contained in t?
+				 (r.getStop()==null || stopTokenIndex<=r.getStop().getTokenIndex()) )
+			{
+				// note: r.getStop()==null likely implies that we bailed out of parser and there's nothing to the right
+				return r;
+			}
+		}
+		return null;
+	}
+
+	/** Replace any subtree siblings of root that are completely to left
+	 *  or right of lookahead range with a CommonToken(Token.INVALID_TYPE,"...")
+	 *  node. The source interval for t is not altered to suit smaller range!
+	 *
+	 *  WARNING: destructive to t.
+	 *
+	 *  @since 4.5.1
+	 */
+	public static void stripChildrenOutOfRange(ParserRuleContext t,
+											   ParserRuleContext root,
+											   int startIndex,
+											   int stopIndex)
+	{
+		if ( t==null ) return;
+		for (int i = 0; i < t.getChildCount(); i++) {
+			ParseTree child = t.getChild(i);
+			Interval range = child.getSourceInterval();
+			if ( child instanceof ParserRuleContext && (range.b < startIndex || range.a > stopIndex) ) {
+				if ( isAncestorOf(child, root) ) { // replace only if subtree doesn't have displayed root
+					CommonToken abbrev = new CommonToken(Token.INVALID_TYPE, "...");
+					t.children.set(i, new TerminalNodeImpl(abbrev));
+				}
+			}
+		}
+	}
+
+	/** Return first node satisfying the pred
+	 *
+ 	 *  @since 4.5.1
+	 */
+	public static Tree findNodeSuchThat(Tree t, Predicate<Tree> pred) {
+		if ( pred.test(t) ) return t;
+
+		int n = t.getChildCount();
+		for (int i = 0 ; i < n ; i++){
+			Tree u = findNodeSuchThat(t.getChild(i), pred);
+			if ( u!=null ) return u;
+		}
+		return null;
 	}
 
 	private Trees() {

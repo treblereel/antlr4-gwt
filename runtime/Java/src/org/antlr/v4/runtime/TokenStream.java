@@ -31,7 +31,6 @@
 package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.NotNull;
 
 /**
  * An {@link IntStream} whose symbols are {@link Token} instances.
@@ -46,7 +45,6 @@ public interface TokenStream extends IntStream {
 	 *
 	 * @see IntStream#LA
 	 */
-	@NotNull
 	public Token LT(int k);
 
 	/**
@@ -67,14 +65,12 @@ public interface TokenStream extends IntStream {
 	 * @throws UnsupportedOperationException if the stream does not support
 	 * retrieving the token at the specified index
 	 */
-	@NotNull
 	public Token get(int index);
 
 	/**
 	 * Gets the underlying {@link TokenSource} which provides tokens for this
 	 * stream.
 	 */
-	@NotNull
 	public TokenSource getTokenSource();
 
 	/**
@@ -98,8 +94,7 @@ public interface TokenStream extends IntStream {
 	 *
 	 * @throws NullPointerException if {@code interval} is {@code null}
 	 */
-	@NotNull
-	public String getText(@NotNull Interval interval);
+	public String getText(Interval interval);
 
 	/**
 	 * Return the text of all tokens in the stream. This method behaves like the
@@ -114,7 +109,6 @@ public interface TokenStream extends IntStream {
 	 *
 	 * @return The text of all tokens in the stream.
 	 */
-	@NotNull
 	public String getText();
 
 	/**
@@ -135,8 +129,7 @@ public interface TokenStream extends IntStream {
 	 * text for.
 	 * @return The text of all tokens within the source interval of {@code ctx}.
 	 */
-	@NotNull
-	public String getText(@NotNull RuleContext ctx);
+	public String getText(RuleContext ctx);
 
 	/**
 	 * Return the text of all tokens in this stream between {@code start} and
@@ -167,6 +160,5 @@ public interface TokenStream extends IntStream {
 	 * @throws UnsupportedOperationException if this stream does not support
 	 * this method for the specified tokens
 	 */
-	@NotNull
-	public String getText(@NotNull Token start, @NotNull Token stop);
+	public String getText(Token start, Token stop);
 }

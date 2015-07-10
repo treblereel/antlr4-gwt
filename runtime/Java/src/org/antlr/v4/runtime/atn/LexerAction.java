@@ -32,7 +32,6 @@ package org.antlr.v4.runtime.atn;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.misc.NotNull;
 
 /**
  * Represents a single action which can be executed following the successful
@@ -48,7 +47,6 @@ public interface LexerAction {
 	 *
 	 * @return The serialization type of the lexer action.
 	 */
-	@NotNull
 	LexerActionType getActionType();
 
 	/**
@@ -75,5 +73,5 @@ public interface LexerAction {
 	 *
 	 * @param lexer The lexer instance.
 	 */
-	void execute(@NotNull Lexer lexer);
+	void execute(Lexer lexer);
 }

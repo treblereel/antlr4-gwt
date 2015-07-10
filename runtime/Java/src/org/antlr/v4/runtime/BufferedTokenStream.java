@@ -31,7 +31,6 @@
 package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +53,6 @@ public class BufferedTokenStream implements TokenStream {
 	/**
 	 * The {@link TokenSource} from which tokens for this stream are fetched.
 	 */
-	@NotNull
     protected TokenSource tokenSource;
 
 	/**
@@ -92,7 +90,7 @@ public class BufferedTokenStream implements TokenStream {
 	 */
 	protected boolean fetchedEOF;
 
-    public BufferedTokenStream(@NotNull TokenSource tokenSource) {
+    public BufferedTokenStream(TokenSource tokenSource) {
 		if (tokenSource == null) {
 			throw new NullPointerException("tokenSource cannot be null");
 		}
@@ -228,7 +226,7 @@ public class BufferedTokenStream implements TokenStream {
         return tokens.get(p-k);
     }
 
-	@NotNull
+
     @Override
     public Token LT(int k) {
         lazyInit();
@@ -455,7 +453,7 @@ public class BufferedTokenStream implements TokenStream {
     public String getSourceName() {	return tokenSource.getSourceName();	}
 
 	/** Get the text of all tokens in this buffer. */
-	@NotNull
+
 	@Override
 	public String getText() {
         lazyInit();
@@ -463,7 +461,7 @@ public class BufferedTokenStream implements TokenStream {
 		return getText(Interval.of(0,size()-1));
 	}
 
-	@NotNull
+
     @Override
     public String getText(Interval interval) {
 		int start = interval.a;
@@ -481,13 +479,13 @@ public class BufferedTokenStream implements TokenStream {
 		return buf.toString();
     }
 
-	@NotNull
+
 	@Override
 	public String getText(RuleContext ctx) {
 		return getText(ctx.getSourceInterval());
 	}
 
-	@NotNull
+
     @Override
     public String getText(Token start, Token stop) {
         if ( start!=null && stop!=null ) {

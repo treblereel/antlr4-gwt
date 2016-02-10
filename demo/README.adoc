@@ -1,0 +1,23 @@
+= Antlr4 GWT Simple Demo Project
+
+This little sample is here to demonstrate how to include the Antlr4-GWT library in your GWT project.
+
+== How to run the example
+
+In the `demo` folder, simply do:
+
+	$ mvn package gwt:run
+
+Once the jetty server is started, go to:
+
+    http://127.0.0.1:8888/SimpleDemo.html
+
+
+== Import the code in Eclipse
+
+Go to `File -> Import... -> Existing Maven Project`, then select the `demo` location and press `finish`.
+
+[NOTE] 
+If you want to modify the grammar and generate again the parser/lexer, you will need the Antlr4.4 Desktop version.
+
+

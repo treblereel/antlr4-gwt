@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='SimpleDemo'>
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
+  <inherits name="org.antlr.v4.antlr4-runtime" />
+  <entry-point class='org.antlr4gwt.demo.client.SimpleDemo' />
+  <source path='client' />
+  <source path='shared' />
+</module>

@@ -1,0 +1,9 @@
+OP=3
+WORD=5
+NUMBER=6
+LEFT_P=1
+RIGHT_P=2
+STRING=4
+WS=7
+')'=2
+'('=1

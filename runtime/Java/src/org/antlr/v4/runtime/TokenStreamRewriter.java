@@ -32,6 +32,8 @@ package org.antlr.v4.runtime;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.Nullable;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,6 +115,7 @@ import java.util.Map;
  * If you don't use named rewrite streams, a "default" stream is used as the
  * first example shows.</p>
  */
+@GwtIncompatible("Should check for further versions")
 public class TokenStreamRewriter {
 	public static final String DEFAULT_PROGRAM_NAME = "default";
 	public static final int PROGRAM_INIT_SIZE = 100;

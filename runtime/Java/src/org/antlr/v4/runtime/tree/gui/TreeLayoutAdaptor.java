@@ -33,9 +33,12 @@ package org.antlr.v4.runtime.tree.gui;
 import org.abego.treelayout.TreeForTreeLayout;
 import org.antlr.v4.runtime.tree.Tree;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@GwtIncompatible("No org.abego.* library")
 /** Adaptor ANTLR trees to {@link TreeForTreeLayout}. */
 public class TreeLayoutAdaptor implements TreeForTreeLayout<Tree> {
 	private static class AntlrTreeChildrenIterable implements Iterable<Tree> {

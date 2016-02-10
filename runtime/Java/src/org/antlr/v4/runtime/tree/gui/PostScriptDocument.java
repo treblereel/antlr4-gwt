@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
+@GwtIncompatible("No Java AWT in GWT")
 public class PostScriptDocument {
 	public static final String DEFAULT_FONT = "CourierNew";
 

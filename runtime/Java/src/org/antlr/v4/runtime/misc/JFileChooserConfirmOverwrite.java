@@ -32,12 +32,15 @@ package org.antlr.v4.runtime.misc;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.io.File;
 
 /**
  *
  * @author Sam Harwell
  */
+@GwtIncompatible("No Java swing composant in GWT")
 public class JFileChooserConfirmOverwrite extends JFileChooser {
 
 	public JFileChooserConfirmOverwrite() {

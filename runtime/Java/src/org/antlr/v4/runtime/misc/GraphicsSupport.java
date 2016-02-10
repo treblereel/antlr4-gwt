@@ -40,6 +40,9 @@ import javax.print.StreamPrintServiceFactory;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.*;
+
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
@@ -49,6 +52,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+@GwtIncompatible("No graphics support here")
 public class GraphicsSupport {
 	/**
 	 [The "BSD license"]

@@ -37,10 +37,13 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 /**
  *
  * @author Sam Harwell
  */
+@GwtIncompatible("No Java AWT in GWT")
 public class SystemFontMetrics extends BasicFontMetrics {
 	protected final Font font;
 

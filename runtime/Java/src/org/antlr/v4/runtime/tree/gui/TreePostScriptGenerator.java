@@ -40,10 +40,13 @@ import org.antlr.v4.runtime.misc.Utils;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.Tree;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+@GwtIncompatible("Java AWT")
 public class TreePostScriptGenerator {
 	public class VariableExtentProvide implements NodeExtentProvider<Tree> {
 		@Override

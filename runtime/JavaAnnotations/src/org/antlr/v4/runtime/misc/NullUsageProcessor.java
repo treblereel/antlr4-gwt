@@ -46,6 +46,8 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -81,6 +83,7 @@ import java.util.Set;
  *
  * @author Sam Harwell
  */
+@GwtIncompatible("Used only at compile time, not required for runtime")
 @SupportedAnnotationTypes({NullUsageProcessor.NotNullClassName, NullUsageProcessor.NullableClassName})
 public class NullUsageProcessor extends AbstractProcessor {
 	public static final String NotNullClassName = "org.antlr.v4.runtime.misc.NotNull";

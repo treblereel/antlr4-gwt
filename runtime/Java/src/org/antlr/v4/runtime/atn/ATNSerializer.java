@@ -36,6 +36,8 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.runtime.misc.Utils;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+@GwtIncompatible("Should check")
 public class ATNSerializer {
 	public ATN atn;
 	private List<String> tokenNames;

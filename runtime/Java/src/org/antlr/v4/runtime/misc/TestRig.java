@@ -47,6 +47,8 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 /** Run a lexer/parser combo, optionally printing tree string or generating
  *  postscript file. Optionally taking input file.
  *
@@ -58,6 +60,7 @@ import org.antlr.v4.runtime.TokenStream;
  *        [-SLL]
  *        [input-filename(s)]
  */
+@GwtIncompatible("Test stuffs, not required by runtime")
 public class TestRig {
 	public static final String LEXER_START_RULE_NAME = "tokens";
 

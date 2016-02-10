@@ -32,6 +32,8 @@ package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,6 +45,7 @@ import java.util.Arrays;
  *  lookahead prediction in parser). "Unbuffered" here refers to fact
  *  that it doesn't buffer all data, not that's it's on demand loading of char.
  */
+@GwtIncompatible("Realies on Reader and InputStream")
 public class UnbufferedCharStream implements CharStream {
 	/**
 	 * A moving window buffer of the data being scanned. While there's a marker,
@@ -93,6 +96,7 @@ public class UnbufferedCharStream implements CharStream {
 	 */
     protected int currentCharIndex = 0;
 
+	@GwtIncompatible("No Reader in GWT")
     protected Reader input;
 
 	/** The name or source of this char stream. */
@@ -109,20 +113,24 @@ public class UnbufferedCharStream implements CharStream {
 		data = new char[bufferSize];
 	}
 
+	@GwtIncompatible("No InputStream in GWT")
 	public UnbufferedCharStream(InputStream input) {
 		this(input, 256);
 	}
 
+	@GwtIncompatible("No Reader in GWT")
 	public UnbufferedCharStream(Reader input) {
 		this(input, 256);
 	}
 
+	@GwtIncompatible("No InputStream in GWT")
 	public UnbufferedCharStream(InputStream input, int bufferSize) {
 		this(bufferSize);
 		this.input = new InputStreamReader(input);
 		fill(1); // prime
 	}
 
+	@GwtIncompatible("No Reader in GWT")
 	public UnbufferedCharStream(Reader input, int bufferSize) {
 		this(bufferSize);
 		this.input = input;

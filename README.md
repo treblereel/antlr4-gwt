@@ -2,10 +2,14 @@
 This version is a port of ANTLR v4 (4.4) runtime library for GWT. The final idea is to define a grammar in ANTLR4, generate the parser with your desktop machine and run/parse/interpret... in your browser. The creation process is the following:
 
 1. create your GWT project and reference this library as maven dependency (see below),
+1. add the Antlr4 module as inherited module in your _app.gwt.xml_ `<inherits name="org.antlr.v4.antlr4-runtime" />`  
 1. define your grammar in ANTLR4 (desktop),
 2. generate the parser/visitor/listener... code in your GWT project with ANTLR4, version 4.4 (desktop),
 3. use the generated parser/visitor/listener in your GWT application,
 4. compile it, that's all.
+
+This version **only migrates the parser/lexer** part and **do not deal with** the **tooling/ui** part. Some classes that have been let unchanged from the original Antlr 4 version. These classes references classes unsuported by GWT (as `java.util.io.file`). Consequently, these classes will raise compilation errors if the GWT compiler option `-strict` is
+used. To simple ignore these error messages, just remove the `-strict` option (I will try to find a better solution).
 
 ## Maven
 Add this repository to your `pom.xml`
@@ -39,6 +43,15 @@ And this dependency:
 	</dependency>
 	...
 </dependencies>
+```
+
+Add this to your `app.gwt.xml`
+```
+<module>
+  ...
+  <inherits name="org.antlr.v4.antlr4-runtime" />
+  ...
+</module>
 ```
 
 # ANTLR v4

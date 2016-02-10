@@ -11,6 +11,8 @@ This version is a port of ANTLR v4 (4.4) runtime library for GWT. The final idea
 This version **only migrates the parser/lexer** part and **do not deal with** the **tooling/ui** part. Some classes that have been let unchanged from the original Antlr 4 version. These classes references classes unsuported by GWT (as `java.util.io.file`). Consequently, these classes will raise compilation errors if the GWT compiler option `-strict` is
 used. To simple ignore these error messages, just remove the `-strict` option (I will try to find a better solution).
 
+WARNING: In this version, the use of lexer predicates reduces the global parser/lexer performances!
+
 ## Maven
 Add this repository to your `pom.xml`
 ```xml

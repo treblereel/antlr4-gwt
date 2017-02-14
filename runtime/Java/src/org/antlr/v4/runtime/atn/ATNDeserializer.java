@@ -109,7 +109,8 @@ public class ATNDeserializer {
 
 	@SuppressWarnings("deprecation")
 	public ATN deserialize(char[] data) {
-		data = data.clone();
+		//data = data.clone();
+		System.arraycopy(data, 0, data, 0, data.length);
 
 		// Each char value in data is shifted by +2 at the entry to this method.
 		// This is an encoding optimization targeting the serialized values 0
@@ -133,14 +134,14 @@ public class ATNDeserializer {
 		int p = 0;
 		int version = toInt(data[p++]);
 		if (version != SERIALIZED_VERSION) {
-			String reason = String.format(Locale.getDefault(), "Could not deserialize ATN with version %d (expected %d).", version, SERIALIZED_VERSION);
+			String reason = "Could not deserialize ATN with version " + version + " (expected " + SERIALIZED_VERSION + ").";
 			throw new UnsupportedOperationException(new InvalidClassException(ATN.class.getName(), reason));
 		}
 
 		UUID uuid = toUUID(data, p);
 		p += 8;
 		if (!SUPPORTED_UUIDS.contains(uuid)) {
-			String reason = String.format(Locale.getDefault(), "Could not deserialize ATN with UUID %s (expected %s or a legacy UUID).", uuid, SERIALIZED_UUID);
+			String reason = "Could not deserialize ATN with UUID " + uuid + " (expected " + SERIALIZED_UUID + " or a legacy UUID).";
 			throw new UnsupportedOperationException(new InvalidClassException(ATN.class.getName(), reason));
 		}
 
@@ -688,7 +689,7 @@ public class ATNDeserializer {
 			case ATNState.PLUS_LOOP_BACK : s = new PlusLoopbackState(); break;
 			case ATNState.LOOP_END : s = new LoopEndState(); break;
 			default :
-				String message = String.format(Locale.getDefault(), "The specified state type %d is not valid.", type);
+				String message = "The specified state type " + type + " is not valid.";
 				throw new IllegalArgumentException(message);
 		}
 
@@ -723,7 +724,7 @@ public class ATNDeserializer {
 			return new LexerTypeAction(data1);
 
 		default:
-			String message = String.format(Locale.getDefault(), "The specified lexer action type %d is not valid.", type);
+			String message = "The specified lexer action type " + type + " is not valid.";
 			throw new IllegalArgumentException(message);
 		}
 	}

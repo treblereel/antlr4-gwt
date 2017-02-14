@@ -88,6 +88,7 @@ public final class LexerChannelAction implements LexerAction {
 
 	@Override
 	public String toString() {
-		return String.format("channel(%d)", channel);
+//		return String.format("channel(%d)", channel);
+	    return "channel(" + channel + ")";
 	}
 }

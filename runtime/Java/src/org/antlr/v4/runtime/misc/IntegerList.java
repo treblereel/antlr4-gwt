@@ -42,7 +42,8 @@ public class IntegerList {
 	}
 
 	public IntegerList(IntegerList list) {
-		_data = list._data.clone();
+		//_data = list._data.clone();
+		System.arraycopy(list._data, 0, _data, 0, list._data.length);
 		_size = list._size;
 	}
 

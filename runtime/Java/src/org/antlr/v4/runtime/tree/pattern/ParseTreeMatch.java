@@ -6,11 +6,11 @@
 
 package org.antlr.v4.runtime.tree.pattern;
 
-import org.antlr.v4.runtime.misc.MultiMap;
-import org.antlr.v4.runtime.tree.ParseTree;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.antlr.v4.runtime.misc.MultiMap;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
  * Represents the result of matching a {@link ParseTree} against a tree pattern.
@@ -190,9 +190,10 @@ public class ParseTreeMatch {
 	 */
 	@Override
 	public String toString() {
-		return String.format(
-			"Match %s; found %d labels",
-			succeeded() ? "succeeded" : "failed",
-			getLabels().size());
+//		return String.format(
+//			"Match %s; found %d labels",
+//			(succeeded() ? "succeeded" : "failed"),
+//			getLabels().size());
+	    return "Match " + (succeeded() ? "succeeded" : "failed") + "; found " + getLabels().size() + " labels";
 	}
 }

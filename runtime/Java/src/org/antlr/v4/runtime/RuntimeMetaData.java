@@ -157,12 +157,14 @@ public class RuntimeMetaData {
 			!getMajorMinorVersion(runtimeVersion).equals(getMajorMinorVersion(compileTimeVersion));
 
 		if ( runtimeConflictsWithGeneratingTool ) {
-			System.err.printf("ANTLR Tool version %s used for code generation does not match the current runtime version %s",
-							  generatingToolVersion, runtimeVersion);
+//			System.err.printf("ANTLR Tool version %s used for code generation does not match the current runtime version %s",
+//							  generatingToolVersion, runtimeVersion);
+		    System.err.println("ANTLR Tool version " + generatingToolVersion + " used for code generation does not match the current runtime version " + runtimeVersion);
 		}
 		if ( runtimeConflictsWithCompileTimeTool ) {
-			System.err.printf("ANTLR Runtime version %s used for parser compilation does not match the current runtime version %s",
-							  compileTimeVersion, runtimeVersion);
+//			System.err.printf("ANTLR Runtime version %s used for parser compilation does not match the current runtime version %s",
+//							  compileTimeVersion, runtimeVersion);
+			System.err.println("ANTLR Runtime version " + compileTimeVersion + " used for parser compilation does not match the current runtime version " + runtimeVersion);
 		}
 	}
 

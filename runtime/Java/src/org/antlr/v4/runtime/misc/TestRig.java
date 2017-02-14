@@ -8,12 +8,16 @@ package org.antlr.v4.runtime.misc;
 
 import java.lang.reflect.Method;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 /** A proxy for the real org.antlr.v4.gui.TestRig that we moved to tool
  *  artifact from runtime.
  *
  *  @deprecated
  *  @since 4.5.1
  */
+@Deprecated
+@GwtIncompatible
 public class TestRig {
 	public static void main(String[] args) {
 		try {

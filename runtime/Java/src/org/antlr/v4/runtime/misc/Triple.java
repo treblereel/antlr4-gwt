@@ -43,6 +43,7 @@ public class Triple<A,B,C> {
 
 	@Override
 	public String toString() {
-		return String.format("(%s, %s, %s)", a, b, c);
+//		return String.format("(%s, %s, %s)", a, b, c);
+	    return "(" + a + ", " + b + ", " + c + ")";
 	}
 }

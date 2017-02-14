@@ -8,6 +8,8 @@ package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +21,7 @@ import java.util.Arrays;
  *  lookahead prediction in parser). "Unbuffered" here refers to fact
  *  that it doesn't buffer all data, not that's it's on demand loading of char.
  */
+@GwtIncompatible("Realies on Reader and InputStream")
 public class UnbufferedCharStream implements CharStream {
 	/**
 	 * A moving window buffer of the data being scanned. While there's a marker,

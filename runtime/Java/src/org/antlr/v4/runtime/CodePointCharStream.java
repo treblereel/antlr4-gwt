@@ -5,9 +5,11 @@
  */
 package org.antlr.v4.runtime;
 
+import java.nio.IntBuffer;
+
 import org.antlr.v4.runtime.misc.Interval;
 
-import java.nio.IntBuffer;
+import com.google.gwt.core.shared.GwtIncompatible;
 
 /**
  * Alternative to {@link ANTLRInputStream} which treats the input
@@ -17,6 +19,7 @@ import java.nio.IntBuffer;
  * Use this if you need to parse input which potentially contains
  * Unicode values > U+FFFF.
  */
+@GwtIncompatible
 public final class CodePointCharStream implements CharStream {
 	private final IntBuffer codePointBuffer;
 	private final int initialPosition;

@@ -5,12 +5,15 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.Interval;
-
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+
+import org.antlr.v4.runtime.misc.Interval;
+
+import com.google.gwt.core.shared.GwtIncompatible;
 
 /**
  * Decodes UTF-8 bytes directly to Unicode code points, stored in an
@@ -20,6 +23,7 @@ import java.nio.charset.CodingErrorAction;
  * intermediate representation, so this optimizes the common case of
  * decoding a UTF-8 file for parsing as Unicode code points.
  */
+@GwtIncompatible
 public class UTF8CodePointDecoder {
 	private static final int SUBSTITUTION_CHARACTER = 0xFFFD;
 	private static final byte NVAL = (byte) 0xFF;
@@ -142,7 +146,8 @@ public class UTF8CodePointDecoder {
 				byte leadingByte = utf8BytesIn.get();
 				if (!decodeLeadingByte(leadingByte)) {
 					codePointsOut = handleDecodeError(
-						String.format("Invalid UTF-8 leading byte 0x%02X", leadingByte),
+//						String.format("Invalid UTF-8 leading byte 0x%02X", leadingByte),
+					    "Invalud UTF-8 leading byte " + Integer.toHexString(leadingByte),
 						codePointsOut);
 					reset();
 					continue;
@@ -161,7 +166,8 @@ public class UTF8CodePointDecoder {
 				decodingTrailBytesNeeded--;
 				if (!decodeTrailingByte(trailingByte)) {
 					codePointsOut = handleDecodeError(
-							String.format("Invalid UTF-8 trailing byte 0x%02X", trailingByte),
+//							String.format("Invalid UTF-8 trailing byte 0x%02X", trailingByte),
+					        "Invalud UTF-8 trailing byte " + Integer.toHexString(trailingByte),
 							codePointsOut);
 					// Skip past any remaining trailing bytes in the sequence.
 					utf8BytesIn.position(utf8BytesIn.position() + decodingTrailBytesNeeded);
@@ -234,10 +240,11 @@ public class UTF8CodePointDecoder {
 		if (codePoint < validCodePointRange.a ||
 			codePoint > validCodePointRange.b) {
 			return handleDecodeError(
-					String.format(
-							"Code point %d is out of expected range %s",
-							codePoint,
-							validCodePointRange),
+//					String.format(
+//							"Code point %d is out of expected range %s",
+//							codePoint,
+//							validCodePointRange),
+			        "Code point " + codePoint + " is out of expected range " + validCodePointRange,
 					codePointsOut);
 		} else {
 			return appendCodePoint(codePoint, codePointsOut);

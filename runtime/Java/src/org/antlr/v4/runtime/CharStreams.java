@@ -7,15 +7,15 @@ package org.antlr.v4.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.nio.charset.CodingErrorAction;
 import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.CodingErrorAction;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import com.google.gwt.core.shared.GwtIncompatible;
 
 /**
  * Utility class to create {@link CodePointCharStream}s from
@@ -31,6 +31,7 @@ public final class CharStreams {
 	 * Convenience method to create a {@link CodePointCharStream}
 	 * for the Unicode code points in a Java {@link String}.
 	 */
+	@GwtIncompatible
 	public static CodePointCharStream createWithString(String s) {
 		// Initial guess assumes no code points > U+FFFF: one code
 		// point for each code unit in the string
@@ -52,6 +53,7 @@ public final class CharStreams {
 		return new CodePointCharStream(codePointBuffer, IntStream.UNKNOWN_SOURCE_NAME);
 	}
 
+	@GwtIncompatible
 	public static CodePointCharStream createWithUTF8(Path path) throws IOException {
 		try (ReadableByteChannel channel = Files.newByteChannel(path)) {
 			return createWithUTF8Channel(
@@ -62,6 +64,7 @@ public final class CharStreams {
 		}
 	}
 
+	@GwtIncompatible
 	public static CodePointCharStream createWithUTF8Stream(InputStream is) throws IOException {
 		try (ReadableByteChannel channel = Channels.newChannel(is)) {
 			return createWithUTF8Channel(
@@ -72,6 +75,7 @@ public final class CharStreams {
 		}
 	}
 
+	@GwtIncompatible
 	public static CodePointCharStream createWithUTF8Channel(
 			ReadableByteChannel channel,
 			int bufferSize,

@@ -5,13 +5,15 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.Interval;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
+
+import org.antlr.v4.runtime.misc.Interval;
+
+import com.google.gwt.core.shared.GwtIncompatible;
 
 /**
  * Vacuum all input from a {@link Reader}/{@link InputStream} and then treat it
@@ -50,30 +52,37 @@ public class ANTLRInputStream implements CharStream {
 		this.n = numberOfActualCharsInArray;
 	}
 
+	@GwtIncompatible
     public ANTLRInputStream(Reader r) throws IOException {
         this(r, INITIAL_BUFFER_SIZE, READ_BUFFER_SIZE);
     }
 
-    public ANTLRInputStream(Reader r, int initialSize) throws IOException {
+	@GwtIncompatible
+	public ANTLRInputStream(Reader r, int initialSize) throws IOException {
         this(r, initialSize, READ_BUFFER_SIZE);
     }
-
+    
+	@GwtIncompatible
     public ANTLRInputStream(Reader r, int initialSize, int readChunkSize) throws IOException {
         load(r, initialSize, readChunkSize);
     }
 
+	@GwtIncompatible
 	public ANTLRInputStream(InputStream input) throws IOException {
 		this(new InputStreamReader(input), INITIAL_BUFFER_SIZE);
 	}
 
+	@GwtIncompatible
 	public ANTLRInputStream(InputStream input, int initialSize) throws IOException {
 		this(new InputStreamReader(input), initialSize);
 	}
 
+	@GwtIncompatible
 	public ANTLRInputStream(InputStream input, int initialSize, int readChunkSize) throws IOException {
 		this(new InputStreamReader(input), initialSize, readChunkSize);
 	}
 
+	@GwtIncompatible
 	public void load(Reader r, int size, int readChunkSize)
 		throws IOException
 	{

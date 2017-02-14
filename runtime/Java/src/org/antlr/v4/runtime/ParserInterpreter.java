@@ -6,6 +6,10 @@
 
 package org.antlr.v4.runtime;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNState;
 import org.antlr.v4.runtime.atn.ActionTransition;
@@ -22,10 +26,6 @@ import org.antlr.v4.runtime.atn.StarLoopEntryState;
 import org.antlr.v4.runtime.atn.Transition;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.Pair;
-
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
 
 /** A parser simulator that mimics what ANTLR's generated
  *  parser code does. A ParserATNSimulator is used to make
@@ -286,7 +286,8 @@ public class ParserInterpreter extends Parser {
 
 			case Transition.PRECEDENCE:
 				if (!precpred(_ctx, ((PrecedencePredicateTransition)transition).precedence)) {
-					throw new FailedPredicateException(this, String.format("precpred(_ctx, %d)", ((PrecedencePredicateTransition)transition).precedence));
+//					throw new FailedPredicateException(this, String.format("precpred(_ctx, %d)", ((PrecedencePredicateTransition)transition).precedence));
+					throw new FailedPredicateException(this, "precpred(_ctx, " + ((PrecedencePredicateTransition)transition).precedence + ")");
 				}
 				break;
 

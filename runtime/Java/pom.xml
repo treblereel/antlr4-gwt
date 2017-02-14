@@ -8,13 +8,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.antlr</groupId>
-		<artifactId>antlr4-master</artifactId>
-		<version>4.6.1-SNAPSHOT</version>
+		<artifactId>antlr4gwt-master</artifactId>
+		<version>4.6.1</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
-	<artifactId>antlr4-runtime</artifactId>
-	<name>ANTLR 4 Runtime</name>
-	<description>The ANTLR 4 Runtime</description>
+	<artifactId>antlr4gwt-runtime</artifactId>
+	<name>ANTLR 4 GWT Runtime</name>
+	<description>The ANTLR 4 GWT Runtime</description>
 
 	<properties>
 		<!-- Assumes dot is in the system path, or specified for the build. -->

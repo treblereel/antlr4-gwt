@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 public class Utils {
     // Seriously: why isn't this built in to java? ugh!
     public static <T> String join(Iterator<T> iter, String separator) {
@@ -70,10 +72,12 @@ public class Utils {
 		return buf.toString();
 	}
 
+	@GwtIncompatible
 	public static void writeFile(String fileName, String content) throws IOException {
 		writeFile(fileName, content, null);
 	}
 
+	@GwtIncompatible
 	public static void writeFile(String fileName, String content, String encoding) throws IOException {
 		File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
@@ -93,12 +97,12 @@ public class Utils {
 		}
 	}
 
-
+	@GwtIncompatible
 	public static char[] readFile(String fileName) throws IOException {
 		return readFile(fileName, null);
 	}
 
-
+	@GwtIncompatible
 	public static char[] readFile(String fileName, String encoding) throws IOException {
 		File f = new File(fileName);
 		int size = (int)f.length();

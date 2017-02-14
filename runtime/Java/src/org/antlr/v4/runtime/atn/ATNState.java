@@ -6,13 +6,12 @@
 
 package org.antlr.v4.runtime.atn;
 
-import org.antlr.v4.runtime.misc.IntervalSet;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+
+import org.antlr.v4.runtime.misc.IntervalSet;
 
 /**
  * The following images show the relation of states and
@@ -163,7 +162,8 @@ public abstract class ATNState {
 			epsilonOnlyTransitions = e.isEpsilon();
 		}
 		else if (epsilonOnlyTransitions != e.isEpsilon()) {
-			System.err.format(Locale.getDefault(), "ATN state %d has both epsilon and non-epsilon transitions.\n", stateNumber);
+//			System.err.format(Locale.getDefault(), "ATN state %d has both epsilon and non-epsilon transitions.\n", stateNumber);
+		    System.err.println("ATN state " + stateNumber + " has both epsilon and non-epsilon transitions.");
 			epsilonOnlyTransitions = false;
 		}
 

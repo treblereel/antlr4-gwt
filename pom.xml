@@ -12,12 +12,12 @@
     <version>9</version>
   </parent>
   <groupId>org.antlr</groupId>
-  <artifactId>antlr4-master</artifactId>
-  <version>4.6.1-SNAPSHOT</version>
+  <artifactId>antlr4gwt-master</artifactId>
+  <version>4.6.1</version>
   <packaging>pom</packaging>
 
-  <name>ANTLR 4</name>
-  <description>ANTLR 4 Master Build POM</description>
+  <name>ANTLR 4 GWT</name>
+  <description>ANTLR 4 GWT Master Build POM</description>
   <url>http://www.antlr.org</url>
   <inceptionYear>1992</inceptionYear>
   <organization>
@@ -78,20 +78,21 @@
 
   <modules>
     <module>runtime/Java</module>
-    <module>tool</module>
-    <module>antlr4-maven-plugin</module>
-    <module>tool-testsuite</module>
-    <module>runtime-testsuite/annotations</module>
-    <module>runtime-testsuite/processors</module>
-    <module>runtime-testsuite</module>
+<!--     <module>tool</module> -->
+<!--     <module>antlr4-maven-plugin</module> -->
+<!--     <module>tool-testsuite</module> -->
+<!--     <module>runtime-testsuite/annotations</module> -->
+<!--     <module>runtime-testsuite/processors</module> -->
+<!--     <module>runtime-testsuite</module> -->
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <antlr.testinprocess>true</antlr.testinprocess>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <gwt.version>2.8.0</gwt.version>
   </properties>
 
   <mailingLists>
@@ -118,6 +119,20 @@
       <resource>
         <directory>resources</directory>
       </resource>
+      <resource>
+        <directory>src</directory>
+        <includes>
+          <include>**/*.gwt.xml</include>
+          <include>**/*.java</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>target/generated-source/antlr4</directory>
+        <includes>
+          <include>**/*.gwt.xml</include>
+          <include>**/*.java</include>
+        </includes>
+      </resource>
     </resources>
     <testResources>
       <testResource>
@@ -142,4 +157,23 @@
       </plugins>
     </pluginManagement>
   </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt</artifactId>
+        <version>${gwt.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>

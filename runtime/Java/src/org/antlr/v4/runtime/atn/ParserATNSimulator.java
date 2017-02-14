@@ -6,6 +6,18 @@
 
 package org.antlr.v4.runtime.atn;
 
+import static org.antlr.v4.runtime.atn.ATNState.BLOCK_END;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.FailedPredicateException;
 import org.antlr.v4.runtime.IntStream;
@@ -23,18 +35,6 @@ import org.antlr.v4.runtime.misc.DoubleKeyMap;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.runtime.misc.Pair;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.antlr.v4.runtime.atn.ATNState.BLOCK_END;
 
 /**
  * The embodiment of the adaptive LL(*), ALL(*), parsing strategy.
@@ -270,7 +270,8 @@ public class ParserATNSimulator extends ATNSimulator {
 	public static final boolean retry_debug = false;
 
 	/** Just in case this optimization is bad, add an ENV variable to turn it off */
-	public static final boolean TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT = Boolean.parseBoolean(System.getenv("TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"));
+//	public static final boolean TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT = Boolean.parseBoolean(System.getProperty("TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT") != null);
+	public static final boolean TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT = false; // TODO
 
 	protected final Parser parser;
 

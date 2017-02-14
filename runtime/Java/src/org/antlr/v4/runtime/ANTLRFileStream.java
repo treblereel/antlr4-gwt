@@ -5,14 +5,17 @@
  */
 package org.antlr.v4.runtime;
 
+import java.io.IOException;
+
 import org.antlr.v4.runtime.misc.Utils;
 
-import java.io.IOException;
+import com.google.gwt.core.shared.GwtIncompatible;
 
 /**
  * This is an {@link ANTLRInputStream} that is loaded from a file all at once
  * when you construct the object.
  */
+@GwtIncompatible
 public class ANTLRFileStream extends ANTLRInputStream {
 	protected String fileName;
 

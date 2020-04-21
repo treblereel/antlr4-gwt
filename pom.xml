@@ -74,7 +74,7 @@
 		<bootclasspath.testCompile>${bootclasspath.java7}</bootclasspath.testCompile>
 		-->
 		<antlr.testinprocess>true</antlr.testinprocess>
-		<gwt.version>2.8.0</gwt.version>
+		<gwt.version>2.8.2</gwt.version>
 		<github.global.server>github</github.global.server>
 	</properties>
 

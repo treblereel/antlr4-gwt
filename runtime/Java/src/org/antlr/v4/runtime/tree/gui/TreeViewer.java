@@ -546,6 +546,7 @@ public class TreeViewer extends JComponent {
 		}
 	}
 
+	@GwtIncompatible
 	public void save(String fileName) throws IOException, PrintException {
 		JDialog dialog = new JDialog();
 		Container contentPane = dialog.getContentPane();

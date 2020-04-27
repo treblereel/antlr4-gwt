@@ -30,8 +30,6 @@
 
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-
 /**
  * A simple stream of symbols whose values are represented as integers. This
  * interface provides <em>marked ranges</em> with support for a minimum level
@@ -79,7 +77,7 @@ public interface IntStream {
 	 * filtering streams (e.g. {@link CommonTokenStream} which distinguishes
 	 * between "on-channel" and "off-channel" tokens).
 	 *
-	 * @throws IllegalStateException if an attempt is made to consume the the
+	 * @throws IllegalStateException if an attempt is made to consume the
 	 * end of the stream (i.e. if {@code LA(1)==}{@link #EOF EOF} before calling
 	 * {@code consume}).
 	 */
@@ -197,7 +195,7 @@ public interface IntStream {
 	 * Set the input cursor to the position indicated by {@code index}. If the
 	 * specified index lies past the end of the stream, the operation behaves as
 	 * though {@code index} was the index of the EOF symbol. After this method
-	 * returns without throwing an exception, the at least one of the following
+	 * returns without throwing an exception, then at least one of the following
 	 * will be true.
 	 *
 	 * <ul>
@@ -237,6 +235,6 @@ public interface IntStream {
 	 * non-null, non-empty string. If such a name is not known, this method
 	 * returns {@link #UNKNOWN_SOURCE_NAME}.
 	 */
-	@NotNull
+
 	public String getSourceName();
 }

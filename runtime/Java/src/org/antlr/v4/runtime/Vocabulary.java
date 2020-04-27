@@ -29,9 +29,6 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
-
 /**
  * This interface provides information about the vocabulary used by a
  * recognizer.
@@ -40,6 +37,12 @@ import org.antlr.v4.runtime.misc.Nullable;
  * @author Sam Harwell
  */
 public interface Vocabulary {
+	/**
+	 * Returns the highest token type value. It can be used to iterate from
+	 * zero to that number, inclusively, thus querying all stored entries.
+	 * @return the highest token type value
+	 */
+	int getMaxTokenType();
 
 	/**
 	 * Gets the string literal associated with a token type. The string returned
@@ -77,7 +80,6 @@ public interface Vocabulary {
 	 * @return The string literal associated with the specified token type, or
 	 * {@code null} if no string literal is associated with the type.
 	 */
-	@Nullable
 	String getLiteralName(int tokenType);
 
 	/**
@@ -90,7 +92,7 @@ public interface Vocabulary {
 	 *
 	 * <ul>
 	 *  <li>Tokens created by lexer rules.</li>
-	 *  <li>Tokens defined in a {@code tokens{}} block in a lexer or parser
+	 *  <li>Tokens defined in a <code>tokens{}</code> block in a lexer or parser
 	 *  grammar.</li>
 	 *  <li>The implicitly defined {@code EOF} token, which has the token type
 	 *  {@link Token#EOF}.</li>
@@ -123,7 +125,6 @@ public interface Vocabulary {
 	 * @return The symbolic name associated with the specified token type, or
 	 * {@code null} if no symbolic name is associated with the type.
 	 */
-	@Nullable
 	String getSymbolicName(int tokenType);
 
 	/**
@@ -146,7 +147,5 @@ public interface Vocabulary {
 	 * @return The display name of the token type, for use in error reporting or
 	 * other user-visible messages which reference specific token types.
 	 */
-	@NotNull
 	String getDisplayName(int tokenType);
-
 }

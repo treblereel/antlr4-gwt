@@ -33,8 +33,6 @@ package org.antlr.v4.runtime.tree.pattern;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 
 /**
  * A {@link Token} object representing an entire subtree matched by a parser
@@ -66,7 +64,7 @@ public class RuleTagToken implements Token {
 	 * @exception IllegalArgumentException if {@code ruleName} is {@code null}
 	 * or empty.
 	 */
-	public RuleTagToken(@NotNull String ruleName, int bypassTokenType) {
+	public RuleTagToken(String ruleName, int bypassTokenType) {
 		this(ruleName, bypassTokenType, null);
 	}
 
@@ -82,7 +80,7 @@ public class RuleTagToken implements Token {
 	 * @exception IllegalArgumentException if {@code ruleName} is {@code null}
 	 * or empty.
 	 */
-	public RuleTagToken(@NotNull String ruleName, int bypassTokenType, @Nullable String label) {
+	public RuleTagToken(String ruleName, int bypassTokenType, String label) {
 		if (ruleName == null || ruleName.isEmpty()) {
 			throw new IllegalArgumentException("ruleName cannot be null or empty.");
 		}
@@ -97,7 +95,7 @@ public class RuleTagToken implements Token {
 	 *
 	 * @return The name of the parser rule associated with this rule tag.
 	 */
-	@NotNull
+
 	public final String getRuleName() {
 		return ruleName;
 	}
@@ -108,7 +106,7 @@ public class RuleTagToken implements Token {
 	 * @return The name of the label associated with the rule tag, or
 	 * {@code null} if this is an unlabeled rule tag.
 	 */
-	@Nullable
+
 	public final String getLabel() {
 		return label;
 	}

@@ -31,7 +31,6 @@
 package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Arrays;
 
@@ -140,19 +139,19 @@ public class UnbufferedTokenStream<T extends Token> implements TokenStream {
 		return tokenSource;
 	}
 
-	@NotNull
+
 	@Override
 	public String getText() {
 		return "";
 	}
 
-	@NotNull
+
 	@Override
 	public String getText(RuleContext ctx) {
 		return getText(ctx.getSourceInterval());
 	}
 
-	@NotNull
+
 	@Override
 	public String getText(Token start, Token stop) {
 		return getText(Interval.of(start.getTokenIndex(), stop.getTokenIndex()));
@@ -208,7 +207,7 @@ public class UnbufferedTokenStream<T extends Token> implements TokenStream {
 		return n;
 	}
 
-	protected void add(@NotNull Token t) {
+	protected void add(Token t) {
 		if ( n>=tokens.length ) {
 			tokens = Arrays.copyOf(tokens, tokens.length * 2);
 		}
@@ -305,7 +304,7 @@ public class UnbufferedTokenStream<T extends Token> implements TokenStream {
 		return tokenSource.getSourceName();
 	}
 
-	@NotNull
+
 	@Override
 	public String getText(Interval interval) {
 		int bufferStartIndex = getBufferStartIndex();

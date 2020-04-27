@@ -33,7 +33,6 @@ package org.antlr.v4.runtime.atn;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.misc.MurmurHash;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Utils;
 
 import java.util.ArrayList;
@@ -219,7 +218,7 @@ public abstract class SemanticContext {
 		 *
 		 * @since 4.3
 		 */
-		@NotNull
+
 		public abstract Collection<SemanticContext> getOperands();
 	}
 
@@ -228,9 +227,9 @@ public abstract class SemanticContext {
 	 * is false.
 	 */
     public static class AND extends Operator {
-		@NotNull public final SemanticContext[] opnds;
+		public final SemanticContext[] opnds;
 
-		public AND(@NotNull SemanticContext a, @NotNull SemanticContext b) {
+		public AND(SemanticContext a, SemanticContext b) {
 			Set<SemanticContext> operands = new HashSet<SemanticContext>();
 			if ( a instanceof AND ) operands.addAll(Arrays.asList(((AND)a).opnds));
 			else operands.add(a);
@@ -325,9 +324,9 @@ public abstract class SemanticContext {
 	 * contexts is true.
 	 */
     public static class OR extends Operator {
-		@NotNull public final SemanticContext[] opnds;
+		public final SemanticContext[] opnds;
 
-		public OR(@NotNull SemanticContext a, @NotNull SemanticContext b) {
+		public OR(SemanticContext a, SemanticContext b) {
 			Set<SemanticContext> operands = new HashSet<SemanticContext>();
 			if ( a instanceof OR ) operands.addAll(Arrays.asList(((OR)a).opnds));
 			else operands.add(a);

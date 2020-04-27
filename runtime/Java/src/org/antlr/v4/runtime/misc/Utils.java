@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.BitSet;
 
 public class Utils {
     // Seriously: why isn't this built in to java? ugh!
@@ -87,11 +88,11 @@ public class Utils {
 		return buf.toString();
 	}
 
-	public static void writeFile(@NotNull String fileName, @NotNull String content) throws IOException {
+	public static void writeFile(String fileName, String content) throws IOException {
 		writeFile(fileName, content, null);
 	}
 
-	public static void writeFile(@NotNull String fileName, @NotNull String content, @Nullable String encoding) throws IOException {
+	public static void writeFile(String fileName, String content, String encoding) throws IOException {
 		throw new UnsupportedOperationException("GWT not implemented");
 		/*File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
@@ -111,13 +112,12 @@ public class Utils {
 		}*/
 	}
 
-	@NotNull
-	public static char[] readFile(@NotNull String fileName) throws IOException {
+
+	public static char[] readFile(String fileName) throws IOException {
 		return readFile(fileName, null);
 	}
 
-	@NotNull
-	public static char[] readFile(@NotNull String fileName, @Nullable String encoding) throws IOException {
+	public static char[] readFile(String fileName, String encoding) throws IOException {
 		throw new UnsupportedOperationException("GWT not implemented");
 		/*
 		File f = new File(fileName);
@@ -145,40 +145,6 @@ public class Utils {
 		*/
 	}
 
-	//public static void waitForClose(final Window window) throws InterruptedException {
-	public static void waitForClose(final Object window) throws InterruptedException {
-		throw new UnsupportedOperationException("GWT not implemented");
-		/*final Object lock = new Object();
-
-		Thread t = new Thread() {
-			@Override
-			public void run() {
-				synchronized (lock) {
-					while (window.isVisible()) {
-						try {
-							lock.wait(500);
-						} catch (InterruptedException e) {
-						}
-					}
-				}
-			}
-		};
-
-		t.start();
-
-		window.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent arg0) {
-				synchronized (lock) {
-					window.setVisible(false);
-					lock.notify();
-				}
-			}
-		});
-
-		t.join();*/
-	}
-
 	/** Convert array of strings to string&rarr;index map. Useful for
 	 *  converting rulenames to name&rarr;ruleindex map.
 	 */
@@ -192,10 +158,70 @@ public class Utils {
 
 	public static char[] toCharArray(IntegerList data) {
 		if ( data==null ) return null;
-		char[] cdata = new char[data.size()];
-		for (int i=0; i<data.size(); i++) {
-			cdata[i] = (char)data.get(i);
+		return data.toCharArray();
+	}
+
+	public static IntervalSet toSet(BitSet bits) {
+		IntervalSet s = new IntervalSet();
+		int i = bits.nextSetBit(0);
+		while ( i >= 0 ) {
+			s.add(i);
+			i = bits.nextSetBit(i+1);
 		}
-		return cdata;
+		return s;
+	}
+
+	/** @since 4.6 */
+	public static String expandTabs(String s, int tabSize) {
+		if ( s==null ) return null;
+		StringBuilder buf = new StringBuilder();
+		int col = 0;
+		for (int i = 0; i<s.length(); i++) {
+			char c = s.charAt(i);
+			switch ( c ) {
+				case '\n' :
+					col = 0;
+					buf.append(c);
+					break;
+				case '\t' :
+					int n = tabSize-col%tabSize;
+					col+=n;
+					buf.append(spaces(n));
+					break;
+				default :
+					col++;
+					buf.append(c);
+					break;
+			}
+		}
+		return buf.toString();
+	}
+
+	/** @since 4.6 */
+	public static String spaces(int n) {
+		return sequence(n, " ");
+	}
+
+	/** @since 4.6 */
+	public static String newlines(int n) {
+		return sequence(n, "\n");
+	}
+
+	/** @since 4.6 */
+	public static String sequence(int n, String s) {
+		StringBuilder buf = new StringBuilder();
+		for (int sp=1; sp<=n; sp++) buf.append(s);
+		return buf.toString();
+	}
+
+	/** @since 4.6 */
+	public static int count(String s, char x) {
+		int n = 0;
+		for (int i = 0; i<s.length(); i++) {
+			if ( s.charAt(i)==x ) {
+				n++;
+			}
+		}
+		return n;
 	}
 }

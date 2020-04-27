@@ -44,7 +44,7 @@ public class IntegerList {
 	private static final int INITIAL_SIZE = 4;
 	private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
-	@NotNull
+
 	private int[] _data;
 
 	private int _size;
@@ -60,19 +60,20 @@ public class IntegerList {
 
 		if (capacity == 0) {
 			_data = EMPTY_DATA;
-		} else {
+		}
+		else {
 			_data = new int[capacity];
 		}
 	}
 
-	public IntegerList(@NotNull IntegerList list) {
+	public IntegerList(IntegerList list) {
 		//_data = list._data.clone();
 		System.arraycopy(list._data, 0, _data, 0, list._data.length);
-		
+
 		_size = list._size;
 	}
 
-	public IntegerList(@NotNull Collection<Integer> list) {
+	public IntegerList(Collection<Integer> list) {
 		this(list.size());
 		for (Integer value : list) {
 			add(value);
@@ -103,12 +104,11 @@ public class IntegerList {
 	public final void addAll(Collection<Integer> list) {
 		ensureCapacity(_size + list.size());
 		int current = 0;
-		for (int x : list) {
-			_data[_size + current] = x;
-			current++;
-		}
-
-		_size += list.size();
+    		for (int x : list) {
+      			_data[_size + current] = x;
+      			current++;
+    		}
+    		_size += list.size();
 	}
 
 	public final int get(int index) {
@@ -263,21 +263,19 @@ public class IntegerList {
 	}
 
 	public final int binarySearch(int key) {
-		//return Arrays.binarySearch(_data, 0, _size, key);
-		//return binarySearch(0, _size, key);
-		return Arrays.binarySearch(_data, key);
+		return Arrays.binarySearch(_data, 0, _size, key);
 	}
 
-	/*
 	public final int binarySearch(int fromIndex, int toIndex, int key) {
 		if (fromIndex < 0 || toIndex < 0 || fromIndex > _size || toIndex > _size) {
 			throw new IndexOutOfBoundsException();
 		}
+		if (fromIndex > toIndex) {
+        		throw new IllegalArgumentException();
+		}
 
-		//return Arrays.binarySearch(_data, fromIndex, toIndex, key);
-		return Arrays.binarySearch(_data, key);
+		return Arrays.binarySearch(_data, fromIndex, toIndex, key);
 	}
-	*/
 
 	private void ensureCapacity(int capacity) {
 		if (capacity < 0 || capacity > MAX_ARRAY_SIZE) {
@@ -287,7 +285,8 @@ public class IntegerList {
 		int newLength;
 		if (_data.length == 0) {
 			newLength = INITIAL_SIZE;
-		} else {
+		}
+		else {
 			newLength = _data.length;
 		}
 
@@ -301,4 +300,39 @@ public class IntegerList {
 		_data = Arrays.copyOf(_data, newLength);
 	}
 
+	/** Convert the list to a UTF-16 encoded char array. If all values are less
+	 *  than the 0xFFFF 16-bit code point limit then this is just a char array
+	 *  of 16-bit char as usual. For values in the supplementary range, encode
+	 * them as two UTF-16 code units.
+	 */
+	public final char[] toCharArray() {
+		// Optimize for the common case (all data values are
+		// < 0xFFFF) to avoid an extra scan
+		char[] resultArray = new char[_size];
+		int resultIdx = 0;
+		boolean calculatedPreciseResultSize = false;
+		for (int i = 0; i < _size; i++) {
+			int codePoint = _data[i];
+			// Calculate the precise result size if we encounter
+			// a code point > 0xFFFF
+			if (!calculatedPreciseResultSize &&
+			    Character.isSupplementaryCodePoint(codePoint)) {
+				resultArray = Arrays.copyOf(resultArray, charArraySize());
+				calculatedPreciseResultSize = true;
+			}
+			// This will throw IllegalArgumentException if
+			// the code point is not a valid Unicode code point
+			int charsWritten = Character.toChars(codePoint, resultArray, resultIdx);
+			resultIdx += charsWritten;
+		}
+		return resultArray;
+	}
+
+	private int charArraySize() {
+		int result = 0;
+		for (int i = 0; i < _size; i++) {
+			result += Character.charCount(_data[i]);
+		}
+		return result;
+	}
 }

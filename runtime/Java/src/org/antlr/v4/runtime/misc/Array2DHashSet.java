@@ -42,7 +42,7 @@ public class Array2DHashSet<T> implements Set<T> {
 	public static final int INITAL_BUCKET_CAPACITY = 8;
 	public static final double LOAD_FACTOR = 0.75;
 
-	@NotNull
+
 	protected final AbstractEqualityComparator<? super T> comparator;
 
 	protected T[][] buckets;
@@ -50,7 +50,7 @@ public class Array2DHashSet<T> implements Set<T> {
 	/** How many elements in set */
 	protected int n = 0;
 
-	protected int threshold = (int)(INITAL_CAPACITY * LOAD_FACTOR); // when to expand
+	protected int threshold = (int)Math.floor(INITAL_CAPACITY * LOAD_FACTOR); // when to expand
 
 	protected int currentPrime = 1; // jump by 4 primes each expand or whatever
 	protected int initialBucketCapacity = INITAL_BUCKET_CAPACITY;
@@ -59,11 +59,11 @@ public class Array2DHashSet<T> implements Set<T> {
 		this(null, INITAL_CAPACITY, INITAL_BUCKET_CAPACITY);
 	}
 
-	public Array2DHashSet(@Nullable AbstractEqualityComparator<? super T> comparator) {
+	public Array2DHashSet(AbstractEqualityComparator<? super T> comparator) {
 		this(comparator, INITAL_CAPACITY, INITAL_BUCKET_CAPACITY);
 	}
 
-	public Array2DHashSet(@Nullable AbstractEqualityComparator<? super T> comparator, int initialCapacity, int initialBucketCapacity) {
+	public Array2DHashSet(AbstractEqualityComparator<? super T> comparator, int initialCapacity, int initialBucketCapacity) {
 		if (comparator == null) {
 			comparator = ObjectEqualityComparator.INSTANCE;
 		}
@@ -110,7 +110,6 @@ public class Array2DHashSet<T> implements Set<T> {
 		// FULL BUCKET, expand and add to end
 		int oldLength = bucket.length;
 		bucket = Arrays.copyOf(bucket, bucket.length * 2);
-		
 		buckets[b] = bucket;
 		bucket[oldLength] = o; // add to end
 		n++;
@@ -227,7 +226,7 @@ public class Array2DHashSet<T> implements Set<T> {
 		return containsFast(asElementType(o));
 	}
 
-	public boolean containsFast(@Nullable T obj) {
+	public boolean containsFast(T obj) {
 		if (obj == null) {
 			return false;
 		}
@@ -291,7 +290,7 @@ public class Array2DHashSet<T> implements Set<T> {
 		return removeFast(asElementType(o));
 	}
 
-	public boolean removeFast(@Nullable T obj) {
+	public boolean removeFast(T obj) {
 		if (obj == null) {
 			return false;
 		}
@@ -408,6 +407,7 @@ public class Array2DHashSet<T> implements Set<T> {
 	public void clear() {
 		buckets = createBuckets(INITAL_CAPACITY);
 		n = 0;
+		threshold = (int)Math.floor(INITAL_CAPACITY * LOAD_FACTOR);
 	}
 
 	@Override

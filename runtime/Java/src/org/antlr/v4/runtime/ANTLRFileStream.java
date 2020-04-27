@@ -29,8 +29,6 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.misc.Utils;
 
 import java.io.IOException;
@@ -38,20 +36,22 @@ import java.io.IOException;
 /**
  * This is an {@link ANTLRInputStream} that is loaded from a file all at once
  * when you construct the object.
+ *
+ * @deprecated as of 4.7 Please use {@link CharStreams} interface.
  */
 public class ANTLRFileStream extends ANTLRInputStream {
 	protected String fileName;
 
-	public ANTLRFileStream(@NotNull String fileName) throws IOException {
+	public ANTLRFileStream(String fileName) throws IOException {
 		this(fileName, null);
 	}
 
-	public ANTLRFileStream(@NotNull String fileName, String encoding) throws IOException {
+	public ANTLRFileStream(String fileName, String encoding) throws IOException {
 		this.fileName = fileName;
 		load(fileName, encoding);
 	}
 
-	public void load(@NotNull String fileName, @Nullable String encoding)
+	public void load(String fileName, String encoding)
 		throws IOException
 	{
 		data = Utils.readFile(fileName, encoding);

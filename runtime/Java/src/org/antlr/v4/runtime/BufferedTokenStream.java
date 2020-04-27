@@ -31,7 +31,6 @@
 package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +53,6 @@ public class BufferedTokenStream implements TokenStream {
 	/**
 	 * The {@link TokenSource} from which tokens for this stream are fetched.
 	 */
-	@NotNull
     protected TokenSource tokenSource;
 
 	/**
@@ -92,7 +90,7 @@ public class BufferedTokenStream implements TokenStream {
 	 */
 	protected boolean fetchedEOF;
 
-    public BufferedTokenStream(@NotNull TokenSource tokenSource) {
+    public BufferedTokenStream(TokenSource tokenSource) {
 		if (tokenSource == null) {
 			throw new NullPointerException("tokenSource cannot be null");
 		}
@@ -115,6 +113,14 @@ public class BufferedTokenStream implements TokenStream {
 		// no resources to release
 	}
 
+	/**
+	 * This method resets the token stream back to the first token in the
+	 * buffer. It is equivalent to calling {@link #seek}{@code (0)}.
+	 *
+	 * @see #setTokenSource(TokenSource)
+	 * @deprecated Use {@code seek(0)} instead.
+	 */
+	@Deprecated
     public void reset() {
         seek(0);
     }
@@ -228,7 +234,7 @@ public class BufferedTokenStream implements TokenStream {
         return tokens.get(p-k);
     }
 
-	@NotNull
+
     @Override
     public Token LT(int k) {
         lazyInit();
@@ -278,6 +284,7 @@ public class BufferedTokenStream implements TokenStream {
         this.tokenSource = tokenSource;
         tokens.clear();
         p = -1;
+        fetchedEOF = false;
     }
 
     public List<Token> getTokens() { return tokens; }
@@ -398,7 +405,7 @@ public class BufferedTokenStream implements TokenStream {
 
 	/** Collect all hidden tokens (any off-default channel) to the right of
 	 *  the current token up until we see a token on DEFAULT_TOKEN_CHANNEL
-	 *  of EOF.
+	 *  or EOF.
 	 */
 	public List<Token> getHiddenTokensToRight(int tokenIndex) {
 		return getHiddenTokensToRight(tokenIndex, -1);
@@ -455,21 +462,18 @@ public class BufferedTokenStream implements TokenStream {
     public String getSourceName() {	return tokenSource.getSourceName();	}
 
 	/** Get the text of all tokens in this buffer. */
-	@NotNull
+
 	@Override
 	public String getText() {
-        lazyInit();
-		fill();
 		return getText(Interval.of(0,size()-1));
 	}
 
-	@NotNull
-    @Override
-    public String getText(Interval interval) {
+	@Override
+	public String getText(Interval interval) {
 		int start = interval.a;
 		int stop = interval.b;
-        if ( start<0 || stop<0 ) return "";
-        lazyInit();
+		if ( start<0 || stop<0 ) return "";
+		fill();
         if ( stop>=tokens.size() ) stop = tokens.size()-1;
 
 		StringBuilder buf = new StringBuilder();
@@ -481,13 +485,13 @@ public class BufferedTokenStream implements TokenStream {
 		return buf.toString();
     }
 
-	@NotNull
+
 	@Override
 	public String getText(RuleContext ctx) {
 		return getText(ctx.getSourceInterval());
 	}
 
-	@NotNull
+
     @Override
     public String getText(Token start, Token stop) {
         if ( start!=null && stop!=null ) {

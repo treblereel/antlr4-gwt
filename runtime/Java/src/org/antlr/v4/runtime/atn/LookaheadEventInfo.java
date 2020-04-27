@@ -31,8 +31,6 @@
 package org.antlr.v4.runtime.atn;
 
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 
 /**
  * This class represents profiling event information for tracking the lookahead
@@ -41,6 +39,13 @@ import org.antlr.v4.runtime.misc.Nullable;
  * @since 4.3
  */
 public class LookaheadEventInfo extends DecisionEventInfo {
+	/** The alternative chosen by adaptivePredict(), not necessarily
+	 *  the outermost alt shown for a rule; left-recursive rules have
+	 *  user-level alts that differ from the rewritten rule with a (...) block
+	 *  and a (..)* loop.
+	 */
+	public int predictedAlt;
+
 	/**
 	 * Constructs a new instance of the {@link LookaheadEventInfo} class with
 	 * the specified detailed lookahead information.
@@ -56,10 +61,13 @@ public class LookaheadEventInfo extends DecisionEventInfo {
 	 * prediction; otherwise, {@code false} if the current lookahead is part of
 	 * an SLL prediction
 	 */
-	public LookaheadEventInfo(int decision, @Nullable ATNConfigSet configs,
-							  @NotNull TokenStream input, int startIndex, int stopIndex,
+	public LookaheadEventInfo(int decision,
+							  ATNConfigSet configs,
+							  int predictedAlt,
+							  TokenStream input, int startIndex, int stopIndex,
 							  boolean fullCtx)
 	{
 		super(decision, configs, input, startIndex, stopIndex, fullCtx);
+		this.predictedAlt = predictedAlt;
 	}
 }

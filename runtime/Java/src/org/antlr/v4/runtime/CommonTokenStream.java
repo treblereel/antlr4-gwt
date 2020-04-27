@@ -30,8 +30,6 @@
 
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-
 /**
  * This class extends {@link BufferedTokenStream} with functionality to filter
  * token streams to tokens on a particular channel (tokens where
@@ -54,7 +52,7 @@ import org.antlr.v4.runtime.misc.NotNull;
  * Note: lexer rules which use the {@code ->skip} lexer command or call
  * {@link Lexer#skip} do not produce tokens at all, so input text matched by
  * such a rule will not be available as part of the token stream, regardless of
- * channel.</p>
+ * channel.</p>we
  */
 public class CommonTokenStream extends BufferedTokenStream {
 	/**
@@ -72,7 +70,7 @@ public class CommonTokenStream extends BufferedTokenStream {
 	 *
 	 * @param tokenSource The token source.
 	 */
-    public CommonTokenStream(@NotNull TokenSource tokenSource) {
+    public CommonTokenStream(TokenSource tokenSource) {
         super(tokenSource);
     }
 
@@ -86,7 +84,7 @@ public class CommonTokenStream extends BufferedTokenStream {
 	 * @param tokenSource The token source.
 	 * @param channel The channel to use for filtering tokens.
 	 */
-    public CommonTokenStream(@NotNull TokenSource tokenSource, int channel) {
+    public CommonTokenStream(TokenSource tokenSource, int channel) {
         this(tokenSource);
         this.channel = channel;
     }
@@ -103,7 +101,7 @@ public class CommonTokenStream extends BufferedTokenStream {
         int i = p;
         int n = 1;
         // find k good tokens looking backwards
-        while ( n<=k ) {
+        while ( n<=k && i>0 ) {
             // skip off-channel tokens
             i = previousTokenOnChannel(i - 1, channel);
             n++;

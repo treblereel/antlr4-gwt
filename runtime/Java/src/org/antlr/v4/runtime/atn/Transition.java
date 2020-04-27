@@ -31,8 +31,6 @@
 package org.antlr.v4.runtime.atn;
 
 import org.antlr.v4.runtime.misc.IntervalSet;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -96,10 +94,10 @@ public abstract class Transition {
 		}});
 
 	/** The target of this transition. */
-	@NotNull
+
 	public ATNState target;
 
-	protected Transition(@NotNull ATNState target) {
+	protected Transition(ATNState target) {
 		if (target == null) {
 			throw new NullPointerException("target cannot be null.");
 		}
@@ -122,7 +120,7 @@ public abstract class Transition {
 		return false;
 	}
 
-	@Nullable
+
 	public IntervalSet label() { return null; }
 
 	public abstract boolean matches(int symbol, int minVocabSymbol, int maxVocabSymbol);

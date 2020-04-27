@@ -30,6 +30,11 @@
 
 package org.antlr.v4.runtime.atn;
 
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.misc.DoubleKeyMap;
+import org.antlr.v4.runtime.misc.MurmurHash;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,13 +43,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.RuleContext;
-import org.antlr.v4.runtime.misc.DoubleKeyMap;
-import org.antlr.v4.runtime.misc.MurmurHash;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
 
 public abstract class PredictionContext {
 	/**
@@ -95,7 +93,7 @@ public abstract class PredictionContext {
 	/** Convert a {@link RuleContext} tree to a {@link PredictionContext} graph.
 	 *  Return {@link #EMPTY} if {@code outerContext} is empty or null.
 	 */
-	public static PredictionContext fromRuleContext(@NotNull ATN atn, RuleContext outerContext) {
+	public static PredictionContext fromRuleContext(ATN atn, RuleContext outerContext) {
 		if ( outerContext==null ) outerContext = RuleContext.EMPTY;
 
 		// if we are in RuleContext of start rule, s, then PredictionContext
@@ -119,12 +117,13 @@ public abstract class PredictionContext {
 
 	public abstract int getReturnState(int index);
 
-	/** This means only the {@link #EMPTY} context is in set. */
+	/** This means only the {@link #EMPTY} (wildcard? not sure) context is in set. */
 	public boolean isEmpty() {
 		return this == EMPTY;
 	}
 
 	public boolean hasEmptyPath() {
+		// since EMPTY_RETURN_STATE can only appear in the last position, we check last one
 		return getReturnState(size() - 1) == EMPTY_RETURN_STATE;
 	}
 
@@ -341,14 +340,14 @@ public abstract class PredictionContext {
 		}
 		else {
 			if ( a == EMPTY && b == EMPTY ) return EMPTY; // $ + $ = $
-			if ( a == EMPTY ) { // $ + x = [$,x]
+			if ( a == EMPTY ) { // $ + x = [x,$]
 				int[] payloads = {b.returnState, EMPTY_RETURN_STATE};
 				PredictionContext[] parents = {b.parent, null};
 				PredictionContext joined =
 					new ArrayPredictionContext(parents, payloads);
 				return joined;
 			}
-			if ( b == EMPTY ) { // x + $ = [$,x] ($ is always first if present)
+			if ( b == EMPTY ) { // x + $ = [x,$] ($ is always last if present)
 				int[] payloads = {a.returnState, EMPTY_RETURN_STATE};
 				PredictionContext[] parents = {a.parent, null};
 				PredictionContext joined =
@@ -565,9 +564,9 @@ public abstract class PredictionContext {
 
 	// From Sam
 	public static PredictionContext getCachedContext(
-		@NotNull PredictionContext context,
-		@NotNull PredictionContextCache contextCache,
-		@NotNull IdentityHashMap<PredictionContext, PredictionContext> visited)
+		PredictionContext context,
+		PredictionContextCache contextCache,
+		IdentityHashMap<PredictionContext, PredictionContext> visited)
 	{
 		if (context.isEmpty()) {
 			return context;
@@ -670,7 +669,7 @@ public abstract class PredictionContext {
 		}
 	}
 
-	public String toString(@Nullable Recognizer<?,?> recog) {
+	public String toString(Recognizer<?,?> recog) {
 		return toString();
 //		return toString(recog, ParserRuleContext.EMPTY);
 	}

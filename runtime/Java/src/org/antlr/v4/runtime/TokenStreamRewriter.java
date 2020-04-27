@@ -30,7 +30,6 @@
 package org.antlr.v4.runtime;
 
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.Nullable;
 
 import com.google.gwt.core.shared.GwtIncompatible;
 
@@ -95,7 +94,7 @@ import java.util.Map;
  * ...
  * rewriter.insertAfter(t, "text to put after t");}
  * rewriter.insertAfter(u, "text after u");}
- * System.out.println(tokens.toString());
+ * System.out.println(rewriter.getText());
  * </pre>
  *
  * <p>
@@ -105,10 +104,10 @@ import java.util.Map;
  * a C file and also its header file--all from the same buffer:</p>
  *
  * <pre>
- * tokens.insertAfter("pass1", t, "text to put after t");}
- * tokens.insertAfter("pass2", u, "text after u");}
- * System.out.println(tokens.toString("pass1"));
- * System.out.println(tokens.toString("pass2"));
+ * rewriter.insertAfter("pass1", t, "text to put after t");}
+ * rewriter.insertAfter("pass2", u, "text after u");}
+ * System.out.println(rewriter.getText("pass1"));
+ * System.out.println(rewriter.getText("pass2"));
  * </pre>
  *
  * <p>
@@ -124,10 +123,10 @@ public class TokenStreamRewriter {
 	// Define the rewrite operation hierarchy
 
 	public class RewriteOperation {
-	/** What index into rewrites List are we? */
-	protected int instructionIndex;
-	/** Token buffer index. */
-	protected int index;
+		/** What index into rewrites List are we? */
+		protected int instructionIndex;
+		/** Token buffer index. */
+		protected int index;
 		protected Object text;
 
 		protected RewriteOperation(int index) {
@@ -169,6 +168,16 @@ public class TokenStreamRewriter {
 			return index+1;
 		}
 	}
+
+	/** Distinguish between insert after/before to do the "insert afters"
+	 *  first and then the "insert befores" at same index. Implementation
+	 *  of "insert after" is "insert before index+1".
+	 */
+    class InsertAfterOp extends InsertBeforeOp {
+        public InsertAfterOp(int index, Object text) {
+            super(index+1, text); // insert after is insert before index+1
+        }
+    }
 
 	/** I'm going to try replacing range from x..y with (y-x)+1 ReplaceOp
 	 *  instructions.
@@ -259,7 +268,10 @@ public class TokenStreamRewriter {
 
 	public void insertAfter(String programName, int index, Object text) {
 		// to insert after, just insert before next index (even if past end)
-		insertBefore(programName,index+1, text);
+        RewriteOperation op = new InsertAfterOp(index, text);
+        List<RewriteOperation> rewrites = getProgram(programName);
+        op.instructionIndex = rewrites.size();
+        rewrites.add(op);
 	}
 
 	public void insertBefore(Token t, Object text) {
@@ -297,7 +309,7 @@ public class TokenStreamRewriter {
 		replace(DEFAULT_PROGRAM_NAME, from, to, text);
 	}
 
-	public void replace(String programName, int from, int to, @Nullable Object text) {
+	public void replace(String programName, int from, int to, Object text) {
 		if ( from > to || from<0 || to<0 || to >= tokens.size() ) {
 			throw new IllegalArgumentException("replace: range invalid: "+from+".."+to+"(size="+tokens.size()+")");
 		}
@@ -307,7 +319,7 @@ public class TokenStreamRewriter {
 		rewrites.add(op);
 	}
 
-	public void replace(String programName, Token from, Token to, @Nullable Object text) {
+	public void replace(String programName, Token from, Token to, Object text) {
 		replace(programName,
 				from.getTokenIndex(),
 				to.getTokenIndex(),
@@ -373,6 +385,13 @@ public class TokenStreamRewriter {
  	 */
 	public String getText() {
 		return getText(DEFAULT_PROGRAM_NAME, Interval.of(0,tokens.size()-1));
+	}
+
+	/** Return the text from the original tokens altered per the
+	 *  instructions given to this rewriter in programName.
+ 	 */
+	public String getText(String programName) {
+		return getText(programName, Interval.of(0,tokens.size()-1));
 	}
 
 	/** Return the text associated with the tokens in the interval from the
@@ -517,8 +536,6 @@ public class TokenStreamRewriter {
 				// throw exception unless disjoint or identical
 				boolean disjoint =
 					prevRop.lastIndex<rop.index || prevRop.index > rop.lastIndex;
-				boolean same =
-					prevRop.index==rop.index && prevRop.lastIndex==rop.lastIndex;
 				// Delete special case of replace (text==null):
 				// D.i-j.u D.x-y.v	| boundaries overlap	combine to max(min)..max(right)
 				if ( prevRop.text==null && rop.text==null && !disjoint ) {
@@ -528,7 +545,7 @@ public class TokenStreamRewriter {
 					rop.lastIndex = Math.max(prevRop.lastIndex, rop.lastIndex);
 					System.out.println("new rop "+rop);
 				}
-				else if ( !disjoint && !same ) {
+				else if ( !disjoint ) {
 					throw new IllegalArgumentException("replace op boundaries of "+rop+" overlap with previous "+prevRop);
 				}
 			}
@@ -543,12 +560,18 @@ public class TokenStreamRewriter {
 			// combine current insert with prior if any at same index
 			List<? extends InsertBeforeOp> prevInserts = getKindOfOps(rewrites, InsertBeforeOp.class, i);
 			for (InsertBeforeOp prevIop : prevInserts) {
-				if ( prevIop.index == iop.index ) { // combine objects
-					// convert to strings...we're in process of toString'ing
-					// whole token buffer so no lazy eval issue with any templates
-					iop.text = catOpText(iop.text,prevIop.text);
-					// delete redundant prior insert
-					rewrites.set(prevIop.instructionIndex, null);
+				if ( prevIop.index==iop.index ) {
+					if ( InsertAfterOp.class.isInstance(prevIop) ) {
+						iop.text = catOpText(prevIop.text, iop.text);
+						rewrites.set(prevIop.instructionIndex, null);
+					}
+					else if ( InsertBeforeOp.class.isInstance(prevIop) ) { // combine objects
+						// convert to strings...we're in process of toString'ing
+						// whole token buffer so no lazy eval issue with any templates
+						iop.text = catOpText(iop.text, prevIop.text);
+						// delete redundant prior insert
+						rewrites.set(prevIop.instructionIndex, null);
+					}
 				}
 			}
 			// look for replaces where iop.index is in range; error

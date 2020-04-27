@@ -30,8 +30,6 @@
 package org.antlr.v4.runtime.misc;
 
 
-import org.antlr.v4.runtime.Token;
-
 import java.util.List;
 
 /**
@@ -59,8 +57,8 @@ public interface IntSet {
 	 *
 	 * @exception IllegalStateException if the current set is read-only
 	 */
-	@NotNull
-	IntSet addAll(@Nullable IntSet set);
+
+	IntSet addAll(IntSet set);
 
 	/**
 	 * Return a new {@link IntSet} object containing all elements that are
@@ -72,8 +70,8 @@ public interface IntSet {
 	 * current set and {@code a}. The value {@code null} may be returned in
 	 * place of an empty result set.
 	 */
-	@Nullable
-	IntSet and(@Nullable IntSet a);
+
+	IntSet and(IntSet a);
 
 	/**
 	 * Return a new {@link IntSet} object containing all elements that are
@@ -92,8 +90,8 @@ public interface IntSet {
 	 * {@code elements} but not present in the current set. The value
 	 * {@code null} may be returned in place of an empty result set.
 	 */
-	@Nullable
-	IntSet complement(@Nullable IntSet elements);
+
+	IntSet complement(IntSet elements);
 
 	/**
 	 * Return a new {@link IntSet} object containing all elements that are
@@ -109,8 +107,8 @@ public interface IntSet {
 	 * set and {@code a}. The value {@code null} may be returned in place of an
 	 * empty result set.
 	 */
-	@Nullable
-	IntSet or(@Nullable IntSet a);
+
+	IntSet or(IntSet a);
 
 	/**
 	 * Return a new {@link IntSet} object containing all elements that are
@@ -129,8 +127,8 @@ public interface IntSet {
 	 * {@code elements} but not present in the current set. The value
 	 * {@code null} may be returned in place of an empty result set.
 	 */
-	@Nullable
-	IntSet subtract(@Nullable IntSet a);
+
+	IntSet subtract(IntSet a);
 
 	/**
 	 * Return the total number of elements represented by the current set.
@@ -153,15 +151,6 @@ public interface IntSet {
 	 */
 	@Override
 	boolean equals(Object obj);
-
-	/**
-	 * Returns the single value contained in the set, if {@link #size} is 1;
-	 * otherwise, returns {@link Token#INVALID_TYPE}.
-	 *
-	 * @return the single value contained in the set, if {@link #size} is 1;
-	 * otherwise, returns {@link Token#INVALID_TYPE}.
-	 */
-	int getSingleElement();
 
 	/**
 	 * Returns {@code true} if the set contains the specified element.
@@ -188,7 +177,7 @@ public interface IntSet {
 	 * @return A list containing all element present in the current set, sorted
 	 * in ascending numerical order.
 	 */
-	@NotNull
+
 	List<Integer> toList();
 
 	/**

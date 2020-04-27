@@ -31,7 +31,6 @@
 package org.antlr.v4.runtime.atn;
 
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ import java.util.List;
 public class ParseInfo {
 	protected final ProfilingATNSimulator atnSimulator;
 
-	public ParseInfo(@NotNull ProfilingATNSimulator atnSimulator) {
+	public ParseInfo(ProfilingATNSimulator atnSimulator) {
 		this.atnSimulator = atnSimulator;
 	}
 
@@ -56,7 +55,6 @@ public class ParseInfo {
 	 * @return An array of {@link DecisionInfo} instances, indexed by decision
 	 * number.
 	 */
-	@NotNull
 	public DecisionInfo[] getDecisionInfo() {
 		return atnSimulator.getDecisionInfo();
 	}
@@ -69,7 +67,6 @@ public class ParseInfo {
 	 * @return A list of decision numbers which required one or more
 	 * full-context predictions during parsing.
 	 */
-	@NotNull
 	public List<Integer> getLLDecisions() {
 		DecisionInfo[] decisions = atnSimulator.getDecisionInfo();
 		List<Integer> LL = new ArrayList<Integer>();

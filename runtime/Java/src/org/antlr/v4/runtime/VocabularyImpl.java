@@ -29,9 +29,6 @@
  */
 package org.antlr.v4.runtime;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
-
 import java.util.Arrays;
 
 /**
@@ -51,15 +48,16 @@ public class VocabularyImpl implements Vocabulary {
 	 * {@link #getDisplayName(int)} returns the numeric value for all tokens
 	 * except {@link Token#EOF}.</p>
 	 */
-	@NotNull
 	public static final VocabularyImpl EMPTY_VOCABULARY = new VocabularyImpl(EMPTY_NAMES, EMPTY_NAMES, EMPTY_NAMES);
 
-	@NotNull
+
 	private final String[] literalNames;
-	@NotNull
+
 	private final String[] symbolicNames;
-	@NotNull
+
 	private final String[] displayNames;
+
+	private final int maxTokenType;
 
 	/**
 	 * Constructs a new instance of {@link VocabularyImpl} from the specified
@@ -73,7 +71,7 @@ public class VocabularyImpl implements Vocabulary {
 	 * @see #getLiteralName(int)
 	 * @see #getSymbolicName(int)
 	 */
-	public VocabularyImpl(@Nullable String[] literalNames, @Nullable String[] symbolicNames) {
+	public VocabularyImpl(String[] literalNames, String[] symbolicNames) {
 		this(literalNames, symbolicNames, null);
 	}
 
@@ -94,10 +92,14 @@ public class VocabularyImpl implements Vocabulary {
 	 * @see #getSymbolicName(int)
 	 * @see #getDisplayName(int)
 	 */
-	public VocabularyImpl(@Nullable String[] literalNames, @Nullable String[] symbolicNames, @Nullable String[] displayNames) {
+	public VocabularyImpl(String[] literalNames, String[] symbolicNames, String[] displayNames) {
 		this.literalNames = literalNames != null ? literalNames : EMPTY_NAMES;
 		this.symbolicNames = symbolicNames != null ? symbolicNames : EMPTY_NAMES;
 		this.displayNames = displayNames != null ? displayNames : EMPTY_NAMES;
+		// See note here on -1 part: https://github.com/antlr/antlr4/pull/1146
+		this.maxTokenType =
+			Math.max(this.displayNames.length,
+					 Math.max(this.literalNames.length, this.symbolicNames.length)) - 1;
 	}
 
 	/**
@@ -114,7 +116,7 @@ public class VocabularyImpl implements Vocabulary {
 	 * @return A {@link Vocabulary} instance which uses {@code tokenNames} for
 	 * the display names of tokens.
 	 */
-	public static Vocabulary fromTokenNames(@Nullable String[] tokenNames) {
+	public static Vocabulary fromTokenNames(String[] tokenNames) {
 		if (tokenNames == null || tokenNames.length == 0) {
 			return EMPTY_VOCABULARY;
 		}
@@ -148,7 +150,11 @@ public class VocabularyImpl implements Vocabulary {
 	}
 
 	@Override
-	@Nullable
+	public int getMaxTokenType() {
+		return maxTokenType;
+	}
+
+	@Override
 	public String getLiteralName(int tokenType) {
 		if (tokenType >= 0 && tokenType < literalNames.length) {
 			return literalNames[tokenType];
@@ -158,7 +164,6 @@ public class VocabularyImpl implements Vocabulary {
 	}
 
 	@Override
-	@Nullable
 	public String getSymbolicName(int tokenType) {
 		if (tokenType >= 0 && tokenType < symbolicNames.length) {
 			return symbolicNames[tokenType];
@@ -172,7 +177,6 @@ public class VocabularyImpl implements Vocabulary {
 	}
 
 	@Override
-	@NotNull
 	public String getDisplayName(int tokenType) {
 		if (tokenType >= 0 && tokenType < displayNames.length) {
 			String displayName = displayNames[tokenType];

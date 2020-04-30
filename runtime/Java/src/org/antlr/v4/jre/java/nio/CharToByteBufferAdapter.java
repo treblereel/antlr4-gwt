@@ -162,17 +162,17 @@ final class CharToByteBufferAdapter extends CharBuffer { //implements DirectBuff
     }
 
     @Override
-    protected char[] protectedArray() {
+    public char[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected int protectedArrayOffset() {
+    public int protectedArrayOffset() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
 

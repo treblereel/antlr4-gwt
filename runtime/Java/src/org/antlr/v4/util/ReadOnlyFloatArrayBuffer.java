@@ -15,14 +15,16 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.FloatBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
- * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
- * the implementation of array based char buffers.
+ * FloatArrayBuffer, ReadWriteFloatArrayBuffer and ReadOnlyFloatArrayBuffer
+ * compose the implementation of array based float buffers.
  * <p>
- * ReadOnlyCharArrayBuffer extends CharArrayBuffer with all the write methods
+ * ReadOnlyFloatArrayBuffer extends FloatArrayBuffer with all the write methods
  * throwing read only exception.
  * </p>
  * <p>
@@ -30,10 +32,10 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
+final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
 
-    static ReadOnlyCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
-        ReadOnlyCharArrayBuffer buf = new ReadOnlyCharArrayBuffer(other
+    static ReadOnlyFloatArrayBuffer copy(FloatArrayBuffer other, int markOfOther) {
+        ReadOnlyFloatArrayBuffer buf = new ReadOnlyFloatArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -41,19 +43,19 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
         return buf;
     }
 
-    ReadOnlyCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
+    ReadOnlyFloatArrayBuffer(int capacity, float[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public CharBuffer asReadOnlyBuffer() {
+    public FloatBuffer asReadOnlyBuffer() {
         return duplicate();
     }
 
-    public CharBuffer compact() {
+    public FloatBuffer compact() {
         throw new ReadOnlyBufferException();
     }
 
-    public CharBuffer duplicate() {
+    public FloatBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -61,7 +63,7 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
         return true;
     }
 
-    protected char[] protectedArray() {
+    public float[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
@@ -73,31 +75,25 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
         return false;
     }
 
-    public CharBuffer put(char c) {
+    public FloatBuffer put(float c) {
         throw new ReadOnlyBufferException();
     }
 
-    public CharBuffer put(int index, char c) {
-        throw new ReadOnlyBufferException();
-    }
-
-    public final CharBuffer put(char[] src, int off, int len) {
+    public FloatBuffer put(int index, float c) {
         throw new ReadOnlyBufferException();
     }
     
-    public final CharBuffer put(CharBuffer src) {
+    public FloatBuffer put(FloatBuffer buf) {
         throw new ReadOnlyBufferException();
     }
 
-    public CharBuffer put(String src, int start, int end) {
-        if ((start < 0 ) || (end < 0) || (long)start + (long)end > src.length()) {
-            throw new IndexOutOfBoundsException();
-        }
+    public final FloatBuffer put(float[] src, int off, int len) {
         throw new ReadOnlyBufferException();
     }
-
-    public CharBuffer slice() {
-        return new ReadOnlyCharArrayBuffer(remaining(), backingArray, offset
+    
+    public FloatBuffer slice() {
+        return new ReadOnlyFloatArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
+
 }

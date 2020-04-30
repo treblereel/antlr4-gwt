@@ -163,7 +163,7 @@ final class FloatToByteBufferAdapter extends FloatBuffer {
     }
 
     @Override
-    protected float[] protectedArray() {
+    public float[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 

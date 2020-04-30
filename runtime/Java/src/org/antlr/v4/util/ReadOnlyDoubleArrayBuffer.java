@@ -15,8 +15,10 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.DoubleBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
  * DoubleArrayBuffer, ReadWriteDoubleArrayBuffer and ReadOnlyDoubleArrayBuffer
@@ -63,7 +65,7 @@ final class ReadOnlyDoubleArrayBuffer extends DoubleArrayBuffer {
         return true;
     }
 
-    protected double[] protectedArray() {
+    public double[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
@@ -71,7 +73,7 @@ final class ReadOnlyDoubleArrayBuffer extends DoubleArrayBuffer {
         throw new ReadOnlyBufferException();
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
 

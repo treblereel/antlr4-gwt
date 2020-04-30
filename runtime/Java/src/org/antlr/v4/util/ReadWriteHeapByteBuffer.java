@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
 
 import com.google.gwt.corp.compatibility.Numbers;
-import com.googlecode.gwtgl.array.ArrayBuffer;
+import org.antlr.v4.jre.java.nio.BufferOverflowException;
+import org.antlr.v4.jre.java.nio.ByteBuffer;
+import org.antlr.v4.jre.java.nio.HeapByteBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
- * DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyByteBuffer compose
- * the implementation of direct byte buffers.
+ * HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose
+ * the implementation of array based byte buffers.
  * <p>
- * DirectReadWriteByteBuffer extends DirectByteBuffer with all the write methods.
+ * ReadWriteHeapByteBuffer extends HeapByteBuffer with all the write methods.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
  * </p>
  * 
  */
-final class DirectReadWriteByteBuffer extends DirectByteBuffer {
+final class ReadWriteHeapByteBuffer extends HeapByteBuffer {
 
-    static DirectReadWriteByteBuffer copy(DirectByteBuffer other, int markOfOther) {
-        DirectReadWriteByteBuffer buf = new DirectReadWriteByteBuffer(
-                other.byteArray.getBuffer(), other.capacity(), other.byteArray.getByteOffset());
+    static ReadWriteHeapByteBuffer copy(HeapByteBuffer other, int markOfOther) {
+        ReadWriteHeapByteBuffer buf = new ReadWriteHeapByteBuffer(
+                other.backingArray, other.capacity(), other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
         buf.mark = markOfOther;
@@ -43,47 +46,25 @@ final class DirectReadWriteByteBuffer extends DirectByteBuffer {
         return buf;
     }
 
-    DirectReadWriteByteBuffer(ArrayBuffer backingArray) {
+    ReadWriteHeapByteBuffer(byte[] backingArray) {
         super(backingArray);
     }
 
-    DirectReadWriteByteBuffer(int capacity) {
+    ReadWriteHeapByteBuffer(int capacity) {
         super(capacity);
     }
 
-    DirectReadWriteByteBuffer(ArrayBuffer backingArray, int capacity, int arrayOffset) {
+    ReadWriteHeapByteBuffer(byte[] backingArray, int capacity, int arrayOffset) {
         super(backingArray, capacity, arrayOffset);
     }
 
-    public FloatBuffer asFloatBuffer() {
-    	return DirectReadWriteFloatBufferAdapter.wrap(this);
-    }
-    
-    public IntBuffer asIntBuffer() {
-    	return order() == ByteOrder.nativeOrder()
-    		? DirectReadWriteIntBufferAdapter.wrap(this) 
-    		: super.asIntBuffer();
-    }
-    
-    public ShortBuffer asShortBuffer() {
-    	return order() == ByteOrder.nativeOrder()
-    		? DirectReadWriteShortBufferAdapter.wrap(this) 
-    		: super.asShortBuffer();
-    }
-
     public ByteBuffer asReadOnlyBuffer() {
-        return DirectReadOnlyByteBuffer.copy(this, mark);
+        return ReadOnlyHeapByteBuffer.copy(this, mark);
     }
 
     public ByteBuffer compact() {
-//        System.arraycopy(backingArray, position + offset, backingArray, offset,
-//                remaining());
-        
-        int rem = remaining();
-        for (int i = 0; i < rem; i++) {
-        	byteArray.set(i, byteArray.get(position + i));
-        }
-        
+        System.arraycopy(backingArray, position + offset, backingArray, offset,
+                remaining());
         position = limit - position;
         limit = capacity;
         mark = UNSET_MARK;
@@ -98,31 +79,31 @@ final class DirectReadWriteByteBuffer extends DirectByteBuffer {
         return false;
     }
 
-    protected byte[] protectedArray() {
-        throw new UnsupportedOperationException();
+    public byte[] protectedArray() {
+        return backingArray;
     }
 
-    protected int protectedArrayOffset() {
-        throw new UnsupportedOperationException();
+    public int protectedArrayOffset() {
+        return offset;
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return true;
     }
 
     public ByteBuffer put(byte b) {
-//        if (position == limit) {
-//            throw new BufferOverflowException();
-//        }
-        byteArray.set(position++, b);
+        if (position == limit) {
+            throw new BufferOverflowException();
+        }
+        backingArray[offset + position++] = b;
         return this;
     }
 
     public ByteBuffer put(int index, byte b) {
-//        if (index < 0 || index >= limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        byteArray.set(index, b);
+        if (index < 0 || index >= limit) {
+            throw new IndexOutOfBoundsException();
+        }
+        backingArray[offset + index] = b;
         return this;
     }
 
@@ -143,9 +124,8 @@ final class DirectReadWriteByteBuffer extends DirectByteBuffer {
         if (isReadOnly()) {
             throw new ReadOnlyBufferException();
         }
-        for (int i = 0; i < len; i++) {
-        	byteArray.set(i + position, src[off + i]);
-        }
+        System.arraycopy(src, off, backingArray, offset
+                + position, len);
         position += len;
         return this;
     }
@@ -168,61 +148,61 @@ final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 
     public ByteBuffer putInt(int value) {
         int newPosition = position + 4;
-//        if (newPosition > limit) {
-//            throw new BufferOverflowException();
-//        }
+        if (newPosition > limit) {
+            throw new BufferOverflowException();
+        }
         store(position, value);
         position = newPosition;
         return this;
     }
 
     public ByteBuffer putInt(int index, int value) {
-//        if (index < 0 || (long)index + 4 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
+        if (index < 0 || (long)index + 4 > limit) {
+            throw new IndexOutOfBoundsException();
+        }
         store(index, value);
         return this;
     }
 
     public ByteBuffer putLong(int index, long value) {
-//        if (index < 0 || (long)index + 8 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
+        if (index < 0 || (long)index + 8 > limit) {
+            throw new IndexOutOfBoundsException();
+        }
         store(index, value);
         return this;
     }
 
     public ByteBuffer putLong(long value) {
         int newPosition = position + 8;
-//        if (newPosition > limit) {
-//            throw new BufferOverflowException();
-//        }
+        if (newPosition > limit) {
+            throw new BufferOverflowException();
+        }
         store(position, value);
         position = newPosition;
         return this;
     }
 
     public ByteBuffer putShort(int index, short value) {
-//        if (index < 0 || (long)index + 2 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
+        if (index < 0 || (long)index + 2 > limit) {
+            throw new IndexOutOfBoundsException();
+        }
         store(index, value);
         return this;
     }
 
     public ByteBuffer putShort(short value) {
         int newPosition = position + 2;
-//        if (newPosition > limit) {
-//            throw new BufferOverflowException();
-//        }
+        if (newPosition > limit) {
+            throw new BufferOverflowException();
+        }
         store(position, value);
         position = newPosition;
         return this;
     }
 
     public ByteBuffer slice() {
-        DirectReadWriteByteBuffer slice = new DirectReadWriteByteBuffer(
-                byteArray.getBuffer(), remaining(), byteArray.getByteOffset() + position);
+        ReadWriteHeapByteBuffer slice = new ReadWriteHeapByteBuffer(
+                backingArray, remaining(), offset + position);
         slice.order = order;
         return slice;
     }

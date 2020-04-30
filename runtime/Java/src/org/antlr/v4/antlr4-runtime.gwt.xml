@@ -5,4 +5,6 @@
 
   <super-source path="jre" />
   <source path="runtime"></source>
-</module> 
+  <source path="util"></source>
+
+</module>

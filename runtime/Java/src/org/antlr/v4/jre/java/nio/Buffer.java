@@ -52,37 +52,36 @@ public abstract class Buffer {
     /**
      * <code>UNSET_MARK</code> means the mark has not been set.
      */
-    final static int UNSET_MARK = -1;
+    protected final static int UNSET_MARK = -1;
 
     /**
      * The capacity of this buffer, which never change.
      */
-    final int capacity;
+    protected final int capacity;
 
     /**
      * <code>limit - 1</code> is the last element that can be read or written.
      * Limit must be no less than zero and no greater than <code>capacity</code>.
      */
-    int limit;
+    public int limit;
 
     /**
      * Mark is where position will be set when <code>reset()</code> is called.
      * Mark is not set by default. Mark is always no less than zero and no
      * greater than <code>position</code>.
      */
-    int mark = UNSET_MARK;
+    public int mark = UNSET_MARK;
 
     /**
      * The current position of this buffer. Position is always no less than zero
      * and no greater than <code>limit</code>.
      */
-    int position = 0;
+    public int position = 0;
 
     /**
      * Construct a buffer with the specified capacity.
      *
-     * @param capacity
-     *            the capacity of this buffer.
+     * @param capacity the capacity of this buffer.
      */
     Buffer(int capacity) {
         super();
@@ -146,7 +145,7 @@ public abstract class Buffer {
      * {@code position < limit}.
      *
      * @return {@code true} if there are elements remaining in this buffer,
-     *         {@code false} otherwise.
+     * {@code false} otherwise.
      * @since Android 1.0
      */
     public final boolean hasRemaining() {
@@ -157,7 +156,7 @@ public abstract class Buffer {
      * Indicates whether this buffer is read-only.
      *
      * @return {@code true} if this buffer is read-only, {@code false}
-     *         otherwise.
+     * otherwise.
      * @since Android 1.0
      */
     public abstract boolean isReadOnly();
@@ -181,12 +180,10 @@ public abstract class Buffer {
      * is set and is greater than the new limit, then it is cleared.
      * </p>
      *
-     * @param newLimit
-     *            the new limit, must not be negative and not greater than
-     *            capacity.
+     * @param newLimit the new limit, must not be negative and not greater than
+     *                 capacity.
      * @return this buffer.
-     * @exception IllegalArgumentException
-     *                if <code>newLimit</code> is invalid.
+     * @throws IllegalArgumentException if <code>newLimit</code> is invalid.
      * @since Android 1.0
      */
     public final Buffer limit(int newLimit) {
@@ -233,12 +230,10 @@ public abstract class Buffer {
      * cleared.
      * </p>
      *
-     * @param newPosition
-     *            the new position, must be not negative and not greater than
-     *            limit.
+     * @param newPosition the new position, must be not negative and not greater than
+     *                    limit.
      * @return this buffer.
-     * @exception IllegalArgumentException
-     *                if <code>newPosition</code> is invalid.
+     * @throws IllegalArgumentException if <code>newPosition</code> is invalid.
      * @since Android 1.0
      */
     public final Buffer position(int newPosition) {
@@ -268,8 +263,7 @@ public abstract class Buffer {
      * Resets the position of this buffer to the <code>mark</code>.
      *
      * @return this buffer.
-     * @exception InvalidMarkException
-     *                if the mark is not set.
+     * @throws InvalidMarkException if the mark is not set.
      * @since Android 1.0
      */
     public final Buffer reset() {

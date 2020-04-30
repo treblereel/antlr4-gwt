@@ -15,26 +15,26 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferOverflowException;
+import org.antlr.v4.jre.java.nio.CharBuffer;
 
 /**
- * DoubleArrayBuffer, ReadWriteDoubleArrayBuffer and ReadOnlyDoubleArrayBuffer
- * compose the implementation of array based double buffers.
+ * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
+ * the implementation of array based char buffers.
  * <p>
- * ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer with all the write
- * methods.
+ * ReadWriteCharArrayBuffer extends CharArrayBuffer with all the write methods.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
  * </p>
  * 
  */
-final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
+final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
 
-    static ReadWriteDoubleArrayBuffer copy(DoubleArrayBuffer other,
-            int markOfOther) {
-        ReadWriteDoubleArrayBuffer buf = new ReadWriteDoubleArrayBuffer(other
+    static ReadWriteCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
+        ReadWriteCharArrayBuffer buf = new ReadWriteCharArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -42,24 +42,23 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
         return buf;
     }
 
-    ReadWriteDoubleArrayBuffer(double[] array) {
+    ReadWriteCharArrayBuffer(char[] array) {
         super(array);
     }
 
-    ReadWriteDoubleArrayBuffer(int capacity) {
+    ReadWriteCharArrayBuffer(int capacity) {
         super(capacity);
     }
 
-    ReadWriteDoubleArrayBuffer(int capacity, double[] backingArray,
-            int arrayOffset) {
+    ReadWriteCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public DoubleBuffer asReadOnlyBuffer() {
-        return ReadOnlyDoubleArrayBuffer.copy(this, mark);
+    public CharBuffer asReadOnlyBuffer() {
+        return ReadOnlyCharArrayBuffer.copy(this, mark);
     }
 
-    public DoubleBuffer compact() {
+    public CharBuffer compact() {
         System.arraycopy(backingArray, position + offset, backingArray, offset,
                 remaining());
         position = limit - position;
@@ -68,7 +67,7 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
         return this;
     }
 
-    public DoubleBuffer duplicate() {
+    public CharBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -76,19 +75,19 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
         return false;
     }
 
-    protected double[] protectedArray() {
+    public char[] protectedArray() {
         return backingArray;
     }
 
-    protected int protectedArrayOffset() {
+    public int protectedArrayOffset() {
         return offset;
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return true;
     }
 
-    public DoubleBuffer put(double c) {
+    public CharBuffer put(char c) {
         if (position == limit) {
             throw new BufferOverflowException();
         }
@@ -96,7 +95,7 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
         return this;
     }
 
-    public DoubleBuffer put(int index, double c) {
+    public CharBuffer put(int index, char c) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
@@ -104,22 +103,21 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
         return this;
     }
 
-    public DoubleBuffer put(double[] src, int off, int len) {
+    public CharBuffer put(char[] src, int off, int len) {
         int length = src.length;
-        if (off < 0 || len < 0 || (long)off + (long)len > length) {
+        if (off < 0 || len < 0 || (long)len + (long)off > length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {
             throw new BufferOverflowException();
         }
-        System.arraycopy(src, off, backingArray, offset
-                + position, len);
+        System.arraycopy(src, off, backingArray, offset+position, len);
         position += len;
         return this;
     }
     
-    public DoubleBuffer slice() {
-        return new ReadWriteDoubleArrayBuffer(remaining(), backingArray, offset
+    public CharBuffer slice() {
+        return new ReadWriteCharArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
 

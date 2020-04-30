@@ -15,8 +15,13 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferOverflowException;
+import org.antlr.v4.jre.java.nio.BufferUnderflowException;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.CharBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
  * This class wraps a char sequence to be a char buffer.
@@ -97,15 +102,15 @@ final class CharSequenceAdapter extends CharBuffer {
         return ByteOrder.nativeOrder();
     }
 
-    protected char[] protectedArray() {
+    public char[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 
-    protected int protectedArrayOffset() {
+    public int protectedArrayOffset() {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
 

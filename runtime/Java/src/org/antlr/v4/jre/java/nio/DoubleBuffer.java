@@ -17,6 +17,7 @@
 
 package org.antlr.v4.jre.java.nio;
 
+import org.antlr.v4.util.BufferFactory;
 
 /**
  * A buffer of doubles.
@@ -109,7 +110,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
      * @param capacity
      *            the capacity of the buffer.
      */
-    DoubleBuffer(int capacity) {
+    protected DoubleBuffer(int capacity) {
         super(capacity);
     }
 
@@ -407,21 +408,21 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
      *
      * @see #array()
      */
-    abstract double[] protectedArray();
+    public abstract double[] protectedArray();
 
     /**
      * Child class implements this method to realize {@code arrayOffset()}.
      *
      * @see #arrayOffset()
      */
-    abstract int protectedArrayOffset();
+    protected abstract int protectedArrayOffset();
 
     /**
      * Child class implements this method to realize {@code hasArray()}.
      *
      * @see #hasArray()
      */
-    abstract boolean protectedHasArray();
+    public abstract boolean protectedHasArray();
 
     /**
      * Writes the given double to the current position and increases the

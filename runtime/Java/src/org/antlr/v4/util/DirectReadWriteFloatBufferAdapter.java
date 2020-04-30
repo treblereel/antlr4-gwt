@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
-
+package org.antlr.v4.util;
 
 
 import com.googlecode.gwtgl.array.ArrayBufferView;
-import com.googlecode.gwtgl.array.Int16Array;
+import com.googlecode.gwtgl.array.Float32Array;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.FloatBuffer;
 
 /**
- * This class wraps a byte buffer to be a short buffer.
+ * This class wraps a byte buffer to be a float buffer.
  * <p>
  * Implementation notice:
  * <ul>
@@ -34,27 +35,29 @@ import com.googlecode.gwtgl.array.Int16Array;
  * </p>
  * 
  */
-final class DirectReadOnlyShortBufferAdapter extends ShortBuffer { // implements com.googlecode.gwtquake.client.HasArrayBufferView {
+final class DirectReadWriteFloatBufferAdapter extends FloatBuffer { // implements com.googlecode.gwtquake.client.HasArrayBufferView {
+//implements DirectBuffer {
 
-    static ShortBuffer wrap(DirectByteBuffer byteBuffer) {
-        return new DirectReadOnlyShortBufferAdapter((DirectByteBuffer) byteBuffer.slice());
+    static FloatBuffer wrap(DirectReadWriteByteBuffer byteBuffer) {
+        return new DirectReadWriteFloatBufferAdapter((DirectReadWriteByteBuffer) byteBuffer.slice());
     }
 
-    private final DirectByteBuffer byteBuffer;
-    private final Int16Array shortArray;
+    private final DirectReadWriteByteBuffer byteBuffer;
+    private final Float32Array floatArray;
 
-    DirectReadOnlyShortBufferAdapter(DirectByteBuffer byteBuffer) {
-        super((byteBuffer.capacity() >> 1));
+    DirectReadWriteFloatBufferAdapter(DirectReadWriteByteBuffer byteBuffer) {
+        super((byteBuffer.capacity() >> 2));
         this.byteBuffer = byteBuffer;
         this.byteBuffer.clear();
-        this.shortArray = Int16Array.create(byteBuffer.byteArray.getBuffer(), 
+        this.floatArray = Float32Array.create(byteBuffer.byteArray.getBuffer(), 
         			byteBuffer.byteArray.getByteOffset(),
         			capacity);
     }
 
+    // TODO(haustein) This will be slow
     @Override
-    public ShortBuffer asReadOnlyBuffer() {
-        DirectReadOnlyShortBufferAdapter buf = new DirectReadOnlyShortBufferAdapter(byteBuffer);
+    public FloatBuffer asReadOnlyBuffer() {
+        DirectReadOnlyFloatBufferAdapter buf = new DirectReadOnlyFloatBufferAdapter(byteBuffer);
         buf.limit = limit;
         buf.position = position;
         buf.mark = mark;
@@ -62,14 +65,21 @@ final class DirectReadOnlyShortBufferAdapter extends ShortBuffer { // implements
     }
 
     @Override
-    public ShortBuffer compact() {
-        throw new ReadOnlyBufferException();
+    public FloatBuffer compact() {
+        byteBuffer.limit(limit << 2);
+        byteBuffer.position(position << 2);
+        byteBuffer.compact();
+        byteBuffer.clear();
+        position = limit - position;
+        limit = capacity;
+        mark = UNSET_MARK;
+        return this;
     }
 
     @Override
-    public ShortBuffer duplicate() {
-        DirectReadOnlyShortBufferAdapter buf = new DirectReadOnlyShortBufferAdapter(
-        		(DirectByteBuffer) byteBuffer.duplicate());
+    public FloatBuffer duplicate() {
+        DirectReadWriteFloatBufferAdapter buf = new DirectReadWriteFloatBufferAdapter(
+        		(DirectReadWriteByteBuffer) byteBuffer.duplicate());
         buf.limit = limit;
         buf.position = position;
         buf.mark = mark;
@@ -77,19 +87,19 @@ final class DirectReadOnlyShortBufferAdapter extends ShortBuffer { // implements
     }
 
     @Override
-    public short get() {
+    public float get() {
 //        if (position == limit) {
 //            throw new BufferUnderflowException();
 //        }
-        return (short) shortArray.get(position++);
+        return floatArray.get(position++);
     }
 
     @Override
-    public short get(int index) {
+    public float get(int index) {
 //        if (index < 0 || index >= limit) {
 //            throw new IndexOutOfBoundsException();
 //        }
-        return (short) shortArray.get(index);
+        return floatArray.get(index);
     }
 
     @Override
@@ -99,7 +109,7 @@ final class DirectReadOnlyShortBufferAdapter extends ShortBuffer { // implements
 
     @Override
     public boolean isReadOnly() {
-        return true;
+        return false;
     }
 
     @Override
@@ -108,7 +118,7 @@ final class DirectReadOnlyShortBufferAdapter extends ShortBuffer { // implements
     }
 
     @Override
-    protected short[] protectedArray() {
+    public float[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -123,29 +133,38 @@ final class DirectReadOnlyShortBufferAdapter extends ShortBuffer { // implements
     }
 
     @Override
-    public ShortBuffer put(short c) {
-        throw new ReadOnlyBufferException();
+    public FloatBuffer put(float c) {
+//        if (position == limit) {
+//            throw new BufferOverflowException();
+//        }
+        floatArray.set(position++, c);
+        return this;
     }
 
     @Override
-    public ShortBuffer put(int index, short c) {
-        throw new ReadOnlyBufferException();
+    public FloatBuffer put(int index, float c) {
+//        if (index < 0 || index >= limit) {
+//            throw new IndexOutOfBoundsException();
+//        }
+        floatArray.set(index, c);
+        return this;
     }
 
     @Override
-    public ShortBuffer slice() {
-        byteBuffer.limit(limit << 1);
-        byteBuffer.position(position << 1);
-        ShortBuffer result = new DirectReadOnlyShortBufferAdapter((DirectByteBuffer) byteBuffer.slice());
+    public FloatBuffer slice() {
+        byteBuffer.limit(limit << 2);
+        byteBuffer.position(position << 2);
+        FloatBuffer result = new DirectReadWriteFloatBufferAdapter((DirectReadWriteByteBuffer) 
+        		byteBuffer.slice());
         byteBuffer.clear();
         return result;
     }
 
 	public ArrayBufferView getTypedArray() {
-		return shortArray;
+		return floatArray;
 	}
 
 	public int getElementSize() {
-		return 2;
+		return 4;
 	}
 }

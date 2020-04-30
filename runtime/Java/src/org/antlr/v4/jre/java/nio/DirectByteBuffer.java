@@ -35,19 +35,19 @@ import com.googlecode.gwtgl.array.Int8Array;
  * </p>
  * 
  */
-abstract class DirectByteBuffer extends BaseByteBuffer { // Removed implements com.googlecode.gwtquake.client.HasArrayBufferView
+abstract public class DirectByteBuffer extends BaseByteBuffer { // Removed implements com.googlecode.gwtquake.client.HasArrayBufferView
 
-	Int8Array byteArray;
+	public Int8Array byteArray;
 
-    DirectByteBuffer(int capacity) {
+    protected DirectByteBuffer(int capacity) {
     	this(ArrayBuffer.create(capacity), capacity, 0);
     }
 
-    DirectByteBuffer(ArrayBuffer buf) {
+    protected DirectByteBuffer(ArrayBuffer buf) {
     	this(buf, buf.getByteLength(), 0);
     }
     
-    DirectByteBuffer(ArrayBuffer buffer, int capacity, int offset) {
+    protected DirectByteBuffer(ArrayBuffer buffer, int capacity, int offset) {
     	super(capacity);
     	byteArray = Int8Array.create(buffer, offset, capacity);
     }

@@ -15,13 +15,17 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
+
+import org.antlr.v4.jre.java.nio.BufferUnderflowException;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.IntBuffer;
 
 /**
- * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
- * the implementation of array based char buffers.
+ * IntArrayBuffer, ReadWriteIntArrayBuffer and ReadOnlyIntArrayBuffer compose
+ * the implementation of array based int buffers.
  * <p>
- * CharArrayBuffer implements all the shared readonly methods and is extended by
+ * IntArrayBuffer implements all the shared readonly methods and is extended by
  * the other two classes.
  * </p>
  * <p>
@@ -29,45 +33,45 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-abstract class CharArrayBuffer extends CharBuffer {
+abstract class IntArrayBuffer extends IntBuffer {
 
-    protected final char[] backingArray;
+    protected final int[] backingArray;
 
     protected final int offset;
 
-    CharArrayBuffer(char[] array) {
+    IntArrayBuffer(int[] array) {
         this(array.length, array, 0);
     }
 
-    CharArrayBuffer(int capacity) {
-        this(capacity, new char[capacity], 0);
+    IntArrayBuffer(int capacity) {
+        this(capacity, new int[capacity], 0);
     }
 
-    CharArrayBuffer(int capacity, char[] backingArray, int offset) {
+    IntArrayBuffer(int capacity, int[] backingArray, int offset) {
         super(capacity);
         this.backingArray = backingArray;
         this.offset = offset;
     }
 
-    public final char get() {
+    public final int get() {
         if (position == limit) {
             throw new BufferUnderflowException();
         }
         return backingArray[offset + position++];
     }
 
-    public final char get(int index) {
+    public final int get(int index) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
         return backingArray[offset + index];
     }
 
-    public final CharBuffer get(char[] dest, int off, int len) {
+    public final IntBuffer get(int[] dest, int off, int len) {
         int length = dest.length;
-        if ((off < 0 ) || (len < 0) || (long)off + (long)len > length) {
+        if (off < 0 || len < 0 || (long)len + (long)off > length) {
             throw new IndexOutOfBoundsException();
-        }
+        }       
         if (len > remaining()) {
             throw new BufferUnderflowException();
         }
@@ -84,18 +88,4 @@ abstract class CharArrayBuffer extends CharBuffer {
         return ByteOrder.nativeOrder();
     }
 
-    public final CharSequence subSequence(int start, int end) {
-        if (start < 0 || end < start || end > remaining()) {
-            throw new IndexOutOfBoundsException();
-        }
-        
-        CharBuffer result = duplicate();
-        result.limit(position + end);
-        result.position(position + start);
-        return result;
-    }
-
-    public final String toString() {
-        return String.copyValueOf(backingArray, offset + position, remaining());
-    }
 }

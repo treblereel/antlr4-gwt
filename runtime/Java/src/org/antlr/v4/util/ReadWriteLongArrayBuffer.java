@@ -15,23 +15,26 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
+
+import org.antlr.v4.jre.java.nio.BufferOverflowException;
+import org.antlr.v4.jre.java.nio.LongBuffer;
 
 /**
- * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
- * the implementation of array based char buffers.
+ * LongArrayBuffer, ReadWriteLongArrayBuffer and ReadOnlyLongArrayBuffer compose
+ * the implementation of array based long buffers.
  * <p>
- * ReadWriteCharArrayBuffer extends CharArrayBuffer with all the write methods.
+ * ReadWriteLongArrayBuffer extends LongArrayBuffer with all the write methods.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
  * </p>
  * 
  */
-final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
+final class ReadWriteLongArrayBuffer extends LongArrayBuffer {
 
-    static ReadWriteCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
-        ReadWriteCharArrayBuffer buf = new ReadWriteCharArrayBuffer(other
+    static ReadWriteLongArrayBuffer copy(LongArrayBuffer other, int markOfOther) {
+        ReadWriteLongArrayBuffer buf = new ReadWriteLongArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -39,23 +42,23 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
         return buf;
     }
 
-    ReadWriteCharArrayBuffer(char[] array) {
+    ReadWriteLongArrayBuffer(long[] array) {
         super(array);
     }
 
-    ReadWriteCharArrayBuffer(int capacity) {
+    ReadWriteLongArrayBuffer(int capacity) {
         super(capacity);
     }
 
-    ReadWriteCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
+    ReadWriteLongArrayBuffer(int capacity, long[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public CharBuffer asReadOnlyBuffer() {
-        return ReadOnlyCharArrayBuffer.copy(this, mark);
+    public LongBuffer asReadOnlyBuffer() {
+        return ReadOnlyLongArrayBuffer.copy(this, mark);
     }
 
-    public CharBuffer compact() {
+    public LongBuffer compact() {
         System.arraycopy(backingArray, position + offset, backingArray, offset,
                 remaining());
         position = limit - position;
@@ -64,7 +67,7 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
         return this;
     }
 
-    public CharBuffer duplicate() {
+    public LongBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -72,7 +75,7 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
         return false;
     }
 
-    protected char[] protectedArray() {
+    protected long[] protectedArray() {
         return backingArray;
     }
 
@@ -84,7 +87,7 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
         return true;
     }
 
-    public CharBuffer put(char c) {
+    public LongBuffer put(long c) {
         if (position == limit) {
             throw new BufferOverflowException();
         }
@@ -92,7 +95,7 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
         return this;
     }
 
-    public CharBuffer put(int index, char c) {
+    public LongBuffer put(int index, long c) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
@@ -100,21 +103,22 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
         return this;
     }
 
-    public CharBuffer put(char[] src, int off, int len) {
+    public LongBuffer put(long[] src, int off, int len) {
         int length = src.length;
-        if (off < 0 || len < 0 || (long)len + (long)off > length) {
+        if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {
             throw new BufferOverflowException();
         }
-        System.arraycopy(src, off, backingArray, offset+position, len);
+        System.arraycopy(src, off, backingArray, offset
+                + position, len);
         position += len;
         return this;
     }
     
-    public CharBuffer slice() {
-        return new ReadWriteCharArrayBuffer(remaining(), backingArray, offset
+    public LongBuffer slice() {
+        return new ReadWriteLongArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
 

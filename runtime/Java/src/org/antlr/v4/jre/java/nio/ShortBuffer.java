@@ -17,6 +17,7 @@
 
 package org.antlr.v4.jre.java.nio;
 
+import org.antlr.v4.util.BufferFactory;
 
 /**
  * A buffer of shorts.
@@ -110,7 +111,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
      * @param capacity
      *            The capacity of the buffer
      */
-    ShortBuffer(int capacity) {
+    protected ShortBuffer(int capacity) {
         super(capacity);
     }
 
@@ -401,21 +402,21 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
      *
      * @return see {@code array()}
      */
-    abstract short[] protectedArray();
+    protected abstract short[] protectedArray();
 
     /**
      * Child class implements this method to realize {@code arrayOffset()}.
      *
      * @return see {@code arrayOffset()}
      */
-    abstract int protectedArrayOffset();
+    protected abstract int protectedArrayOffset();
 
     /**
      * Child class implements this method to realize {@code hasArray()}.
      *
      * @return see {@code hasArray()}
      */
-    abstract boolean protectedHasArray();
+    protected abstract boolean protectedHasArray();
 
     /**
      * Writes the given short to the current position and increases the position

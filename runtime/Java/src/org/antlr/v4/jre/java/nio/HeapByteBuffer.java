@@ -33,21 +33,21 @@ import org.apache.harmony.luni.platform.Endianness;
  * </p>
  *
  */
-abstract class HeapByteBuffer extends BaseByteBuffer {
+public abstract class HeapByteBuffer extends BaseByteBuffer {
 
-    protected final byte[] backingArray;
+    public final byte[] backingArray;
 
-    protected final int offset;
+    public final int offset;
 
-    HeapByteBuffer(byte[] backingArray) {
+    protected HeapByteBuffer(byte[] backingArray) {
         this(backingArray, backingArray.length, 0);
     }
 
-    HeapByteBuffer(int capacity) {
+    protected HeapByteBuffer(int capacity) {
         this(new byte[capacity], capacity, 0);
     }
 
-    HeapByteBuffer(byte[] backingArray, int capacity, int offset) {
+    protected HeapByteBuffer(byte[] backingArray, int capacity, int offset) {
         super(capacity);
         this.backingArray = backingArray;
         this.offset = offset;

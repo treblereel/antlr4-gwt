@@ -17,6 +17,8 @@
 
 package org.antlr.v4.jre.java.nio;
 
+import org.antlr.v4.util.BufferFactory;
+
 /**
  * A buffer of ints.
  * <p>
@@ -108,7 +110,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
      * @param capacity
      *            the capacity of the buffer.
      */
-    IntBuffer(int capacity) {
+    protected IntBuffer(int capacity) {
         super(capacity);
     }
 

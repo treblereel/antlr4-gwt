@@ -15,14 +15,16 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.CharBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
- * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
- * compose the implementation of array based short buffers.
+ * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
+ * the implementation of array based char buffers.
  * <p>
- * ReadOnlyShortArrayBuffer extends ShortArrayBuffer with all the write methods
+ * ReadOnlyCharArrayBuffer extends CharArrayBuffer with all the write methods
  * throwing read only exception.
  * </p>
  * <p>
@@ -30,10 +32,10 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
+final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
 
-    static ReadOnlyShortArrayBuffer copy(ShortArrayBuffer other, int markOfOther) {
-        ReadOnlyShortArrayBuffer buf = new ReadOnlyShortArrayBuffer(other
+    static ReadOnlyCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
+        ReadOnlyCharArrayBuffer buf = new ReadOnlyCharArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -41,19 +43,19 @@ final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
         return buf;
     }
 
-    ReadOnlyShortArrayBuffer(int capacity, short[] backingArray, int arrayOffset) {
+    ReadOnlyCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public ShortBuffer asReadOnlyBuffer() {
+    public CharBuffer asReadOnlyBuffer() {
         return duplicate();
     }
 
-    public ShortBuffer compact() {
+    public CharBuffer compact() {
         throw new ReadOnlyBufferException();
     }
 
-    public ShortBuffer duplicate() {
+    public CharBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -61,37 +63,43 @@ final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
         return true;
     }
 
-    protected short[] protectedArray() {
+    public char[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
-    protected int protectedArrayOffset() {
+    public int protectedArrayOffset() {
         throw new ReadOnlyBufferException();
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
-    
-    public ShortBuffer put(ShortBuffer buf) {
+
+    public CharBuffer put(char c) {
         throw new ReadOnlyBufferException();
     }
 
-    public ShortBuffer put(short c) {
+    public CharBuffer put(int index, char c) {
         throw new ReadOnlyBufferException();
     }
 
-    public ShortBuffer put(int index, short c) {
-        throw new ReadOnlyBufferException();
-    }
-
-    public final ShortBuffer put(short[] src, int off, int len) {
+    public final CharBuffer put(char[] src, int off, int len) {
         throw new ReadOnlyBufferException();
     }
     
-    public ShortBuffer slice() {
-        return new ReadOnlyShortArrayBuffer(remaining(), backingArray, offset
+    public final CharBuffer put(CharBuffer src) {
+        throw new ReadOnlyBufferException();
+    }
+
+    public CharBuffer put(String src, int start, int end) {
+        if ((start < 0 ) || (end < 0) || (long)start + (long)end > src.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        throw new ReadOnlyBufferException();
+    }
+
+    public CharBuffer slice() {
+        return new ReadOnlyCharArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
-
 }

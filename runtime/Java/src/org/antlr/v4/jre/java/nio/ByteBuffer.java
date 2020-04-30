@@ -17,6 +17,7 @@
 package org.antlr.v4.jre.java.nio;
 
 
+import org.antlr.v4.util.BufferFactory;
 import org.apache.harmony.luni.platform.Endianness;
 
 
@@ -125,7 +126,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
     /**
      * The byte order of this buffer, default is {@code BIG_ENDIAN}.
      */
-    Endianness order = Endianness.BIG_ENDIAN;
+    protected Endianness order = Endianness.BIG_ENDIAN;
 
     /**
      * Constructs a {@code ByteBuffer} with given capacity.
@@ -759,7 +760,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
      * @see #array()
      * @since Android 1.0
      */
-    abstract byte[] protectedArray();
+    public abstract byte[] protectedArray();
 
     /**
      * Child class implements this method to realize {@code arrayOffset()}.
@@ -767,7 +768,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
      * @see #arrayOffset()
      * @since Android 1.0
      */
-    abstract int protectedArrayOffset();
+    public abstract int protectedArrayOffset();
 
     /**
      * Child class implements this method to realize {@code hasArray()}.
@@ -775,7 +776,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
      * @see #hasArray()
      * @since Android 1.0
      */
-    abstract boolean protectedHasArray();
+    public abstract boolean protectedHasArray();
 
     /**
      * Writes the given byte to the current position and increases the position

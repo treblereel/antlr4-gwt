@@ -15,14 +15,17 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferUnderflowException;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.DoubleBuffer;
 
 /**
- * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
- * compose the implementation of array based short buffers.
+ * DoubleArrayBuffer, ReadWriteDoubleArrayBuffer and ReadOnlyDoubleArrayBuffer
+ * compose the implementation of array based double buffers.
  * <p>
- * ShortArrayBuffer implements all the shared readonly methods and is extended
+ * DoubleArrayBuffer implements all the shared readonly methods and is extended
  * by the other two classes.
  * </p>
  * <p>
@@ -30,41 +33,41 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-abstract class ShortArrayBuffer extends ShortBuffer {
+abstract class DoubleArrayBuffer extends DoubleBuffer {
 
-    protected final short[] backingArray;
+    protected final double[] backingArray;
 
     protected final int offset;
 
-    ShortArrayBuffer(short[] array) {
+    DoubleArrayBuffer(double[] array) {
         this(array.length, array, 0);
     }
 
-    ShortArrayBuffer(int capacity) {
-        this(capacity, new short[capacity], 0);
+    DoubleArrayBuffer(int capacity) {
+        this(capacity, new double[capacity], 0);
     }
 
-    ShortArrayBuffer(int capacity, short[] backingArray, int offset) {
+    DoubleArrayBuffer(int capacity, double[] backingArray, int offset) {
         super(capacity);
         this.backingArray = backingArray;
         this.offset = offset;
     }
 
-    public final short get() {
+    public final double get() {
         if (position == limit) {
             throw new BufferUnderflowException();
         }
         return backingArray[offset + position++];
     }
 
-    public final short get(int index) {
+    public final double get(int index) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
         return backingArray[offset + index];
     }
 
-    public final ShortBuffer get(short[] dest, int off, int len) {
+    public final DoubleBuffer get(double[] dest, int off, int len) {
         int length = dest.length;
         if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();

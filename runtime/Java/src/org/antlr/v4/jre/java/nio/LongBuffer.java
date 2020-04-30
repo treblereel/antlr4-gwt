@@ -17,6 +17,7 @@
 
 package org.antlr.v4.jre.java.nio;
 
+import org.antlr.v4.util.BufferFactory;
 
 /**
  * A buffer of longs.
@@ -110,7 +111,7 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
      * @param capacity
      *            The capacity of the buffer
      */
-    LongBuffer(int capacity) {
+    protected LongBuffer(int capacity) {
         super(capacity);
     }
 
@@ -404,21 +405,21 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
      *
      * @return see {@code array()}
      */
-    abstract long[] protectedArray();
+    protected abstract long[] protectedArray();
 
     /**
      * Child class implements this method to realize {@code arrayOffset()}.
      *
      * @return see {@code arrayOffset()}
      */
-    abstract int protectedArrayOffset();
+    protected abstract int protectedArrayOffset();
 
     /**
      * Child class implements this method to realize {@code hasArray()}.
      *
      * @return see {@code hasArray()}
      */
-    abstract boolean protectedHasArray();
+    protected abstract boolean protectedHasArray();
 
     /**
      * Writes the given long to the current position and increases the position

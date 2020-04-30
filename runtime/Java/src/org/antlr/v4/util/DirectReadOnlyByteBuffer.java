@@ -15,10 +15,17 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
 
 import com.googlecode.gwtgl.array.ArrayBuffer;
+import org.antlr.v4.jre.java.nio.ByteBuffer;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.DirectByteBuffer;
+import org.antlr.v4.jre.java.nio.FloatBuffer;
+import org.antlr.v4.jre.java.nio.IntBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
+import org.antlr.v4.jre.java.nio.ShortBuffer;
 
 /**
  * HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose
@@ -64,15 +71,15 @@ final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
         return true;
     }
 
-    protected byte[] protectedArray() {
+    public byte[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
-    protected int protectedArrayOffset() {
+    public int protectedArrayOffset() {
         throw new ReadOnlyBufferException();
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
 
@@ -82,13 +89,13 @@ final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
     
     public IntBuffer asIntBuffer() {
     	return order() == ByteOrder.nativeOrder()
-    		? DirectReadOnlyIntBufferAdapter.wrap(this) 
+    		? DirectReadOnlyIntBufferAdapter.wrap(this)
     		: super.asIntBuffer();
     }
     
     public ShortBuffer asShortBuffer() {
     	return order() == ByteOrder.nativeOrder()
-    		? DirectReadOnlyShortBufferAdapter.wrap(this) 
+    		? DirectReadOnlyShortBufferAdapter.wrap(this)
     		: super.asShortBuffer();
     }
     

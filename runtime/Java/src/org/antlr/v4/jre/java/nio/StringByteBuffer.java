@@ -22,15 +22,15 @@ class StringByteBuffer extends BaseByteBuffer {
     return this;
   }
 
-  byte[] protectedArray() {
+  public byte[] protectedArray() {
     throw new UnsupportedOperationException();
   }
 
-  int protectedArrayOffset() {
+  public int protectedArrayOffset() {
     throw new UnsupportedOperationException();
   }
 
-  boolean protectedHasArray() {
+  public boolean protectedHasArray() {
     throw new UnsupportedOperationException();
   }
 

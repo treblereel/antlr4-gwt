@@ -17,6 +17,8 @@
 
 package org.antlr.v4.jre.java.nio;
 
+import org.antlr.v4.util.BufferFactory;
+
 /**
  * A buffer of chars.
  * <p>
@@ -163,7 +165,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
      *            the capacity of the buffer.
      * @since Android 1.0
      */
-    CharBuffer(int capacity) {
+    protected CharBuffer(int capacity) {
         super(capacity);
     }
 
@@ -484,21 +486,21 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
      *
      * @see #array()
      */
-    abstract char[] protectedArray();
+    public abstract char[] protectedArray();
 
     /**
      * Child class implements this method to realize {@code arrayOffset()}.
      *
      * @see #arrayOffset()
      */
-    abstract int protectedArrayOffset();
+    public abstract int protectedArrayOffset();
 
     /**
      * Child class implements this method to realize {@code hasArray()}.
      *
      * @see #hasArray()
      */
-    abstract boolean protectedHasArray();
+    public abstract boolean protectedHasArray();
 
     /**
      * Writes the given char to the current position and increases the position

@@ -15,24 +15,27 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.LongBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
  * LongArrayBuffer, ReadWriteLongArrayBuffer and ReadOnlyLongArrayBuffer compose
  * the implementation of array based long buffers.
  * <p>
- * ReadWriteLongArrayBuffer extends LongArrayBuffer with all the write methods.
+ * ReadOnlyLongArrayBuffer extends LongArrayBuffer with all the write methods
+ * throwing read only exception.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
  * </p>
  * 
  */
-final class ReadWriteLongArrayBuffer extends LongArrayBuffer {
+final class ReadOnlyLongArrayBuffer extends LongArrayBuffer {
 
-    static ReadWriteLongArrayBuffer copy(LongArrayBuffer other, int markOfOther) {
-        ReadWriteLongArrayBuffer buf = new ReadWriteLongArrayBuffer(other
+    static ReadOnlyLongArrayBuffer copy(LongArrayBuffer other, int markOfOther) {
+        ReadOnlyLongArrayBuffer buf = new ReadOnlyLongArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -40,29 +43,16 @@ final class ReadWriteLongArrayBuffer extends LongArrayBuffer {
         return buf;
     }
 
-    ReadWriteLongArrayBuffer(long[] array) {
-        super(array);
-    }
-
-    ReadWriteLongArrayBuffer(int capacity) {
-        super(capacity);
-    }
-
-    ReadWriteLongArrayBuffer(int capacity, long[] backingArray, int arrayOffset) {
+    ReadOnlyLongArrayBuffer(int capacity, long[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
     public LongBuffer asReadOnlyBuffer() {
-        return ReadOnlyLongArrayBuffer.copy(this, mark);
+        return duplicate();
     }
 
     public LongBuffer compact() {
-        System.arraycopy(backingArray, position + offset, backingArray, offset,
-                remaining());
-        position = limit - position;
-        limit = capacity;
-        mark = UNSET_MARK;
-        return this;
+        throw new ReadOnlyBufferException();
     }
 
     public LongBuffer duplicate() {
@@ -70,53 +60,39 @@ final class ReadWriteLongArrayBuffer extends LongArrayBuffer {
     }
 
     public boolean isReadOnly() {
-        return false;
-    }
-
-    protected long[] protectedArray() {
-        return backingArray;
-    }
-
-    protected int protectedArrayOffset() {
-        return offset;
-    }
-
-    protected boolean protectedHasArray() {
         return true;
     }
 
+    protected long[] protectedArray() {
+        throw new ReadOnlyBufferException();
+    }
+
+    protected int protectedArrayOffset() {
+        throw new ReadOnlyBufferException();
+    }
+
+    protected boolean protectedHasArray() {
+        return false;
+    }
+
     public LongBuffer put(long c) {
-        if (position == limit) {
-            throw new BufferOverflowException();
-        }
-        backingArray[offset + position++] = c;
-        return this;
+        throw new ReadOnlyBufferException();
     }
 
     public LongBuffer put(int index, long c) {
-        if (index < 0 || index >= limit) {
-            throw new IndexOutOfBoundsException();
-        }
-        backingArray[offset + index] = c;
-        return this;
+        throw new ReadOnlyBufferException();
+    }
+    
+    public LongBuffer put(LongBuffer buf) {
+        throw new ReadOnlyBufferException();
     }
 
-    public LongBuffer put(long[] src, int off, int len) {
-        int length = src.length;
-        if (off < 0 || len < 0 || (long)off + (long)len > length) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (len > remaining()) {
-            throw new BufferOverflowException();
-        }
-        System.arraycopy(src, off, backingArray, offset
-                + position, len);
-        position += len;
-        return this;
+    public final LongBuffer put(long[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
     }
     
     public LongBuffer slice() {
-        return new ReadWriteLongArrayBuffer(remaining(), backingArray, offset
+        return new ReadOnlyLongArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
 

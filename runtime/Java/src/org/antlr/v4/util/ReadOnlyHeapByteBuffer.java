@@ -15,8 +15,11 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.ByteBuffer;
+import org.antlr.v4.jre.java.nio.HeapByteBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
  * HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose
@@ -62,15 +65,15 @@ final class ReadOnlyHeapByteBuffer extends HeapByteBuffer {
         return true;
     }
 
-    protected byte[] protectedArray() {
+    public byte[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
-    protected int protectedArrayOffset() {
+    public int protectedArrayOffset() {
         throw new ReadOnlyBufferException();
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
 

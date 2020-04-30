@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
-
+package org.antlr.v4.util;
 
 import com.googlecode.gwtgl.array.ArrayBufferView;
 import com.googlecode.gwtgl.array.Float32Array;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.DirectByteBuffer;
+import org.antlr.v4.jre.java.nio.FloatBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
  * This class wraps a byte buffer to be a float buffer.
@@ -31,28 +34,26 @@ import com.googlecode.gwtgl.array.Float32Array;
  * The adapter extends Buffer, thus has its own position and limit.</li>
  * </ul>
  * </p>
- * 
  */
-final class DirectReadWriteFloatBufferAdapter extends FloatBuffer { // implements com.googlecode.gwtquake.client.HasArrayBufferView {
+final class DirectReadOnlyFloatBufferAdapter extends FloatBuffer { // removed implements com.googlecode.gwtquake.client.HasArrayBufferView
 //implements DirectBuffer {
 
-    static FloatBuffer wrap(DirectReadWriteByteBuffer byteBuffer) {
-        return new DirectReadWriteFloatBufferAdapter((DirectReadWriteByteBuffer) byteBuffer.slice());
+    static FloatBuffer wrap(DirectByteBuffer byteBuffer) {
+        return new DirectReadOnlyFloatBufferAdapter((DirectByteBuffer) byteBuffer.slice());
     }
 
-    private final DirectReadWriteByteBuffer byteBuffer;
+    private final DirectByteBuffer byteBuffer;
     private final Float32Array floatArray;
 
-    DirectReadWriteFloatBufferAdapter(DirectReadWriteByteBuffer byteBuffer) {
+    DirectReadOnlyFloatBufferAdapter(DirectByteBuffer byteBuffer) {
         super((byteBuffer.capacity() >> 2));
         this.byteBuffer = byteBuffer;
         this.byteBuffer.clear();
-        this.floatArray = Float32Array.create(byteBuffer.byteArray.getBuffer(), 
-        			byteBuffer.byteArray.getByteOffset(),
-        			capacity);
+        this.floatArray = Float32Array.create(byteBuffer.byteArray.getBuffer(),
+                                              byteBuffer.byteArray.getByteOffset(),
+                                              capacity);
     }
 
-    // TODO(haustein) This will be slow
     @Override
     public FloatBuffer asReadOnlyBuffer() {
         DirectReadOnlyFloatBufferAdapter buf = new DirectReadOnlyFloatBufferAdapter(byteBuffer);
@@ -64,20 +65,13 @@ final class DirectReadWriteFloatBufferAdapter extends FloatBuffer { // implement
 
     @Override
     public FloatBuffer compact() {
-        byteBuffer.limit(limit << 2);
-        byteBuffer.position(position << 2);
-        byteBuffer.compact();
-        byteBuffer.clear();
-        position = limit - position;
-        limit = capacity;
-        mark = UNSET_MARK;
-        return this;
+        throw new ReadOnlyBufferException();
     }
 
     @Override
     public FloatBuffer duplicate() {
-        DirectReadWriteFloatBufferAdapter buf = new DirectReadWriteFloatBufferAdapter(
-        		(DirectReadWriteByteBuffer) byteBuffer.duplicate());
+        DirectReadOnlyFloatBufferAdapter buf = new DirectReadOnlyFloatBufferAdapter(
+                (DirectByteBuffer) byteBuffer.duplicate());
         buf.limit = limit;
         buf.position = position;
         buf.mark = mark;
@@ -107,7 +101,7 @@ final class DirectReadWriteFloatBufferAdapter extends FloatBuffer { // implement
 
     @Override
     public boolean isReadOnly() {
-        return false;
+        return true;
     }
 
     @Override
@@ -116,7 +110,7 @@ final class DirectReadWriteFloatBufferAdapter extends FloatBuffer { // implement
     }
 
     @Override
-    protected float[] protectedArray() {
+    public float[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -132,37 +126,28 @@ final class DirectReadWriteFloatBufferAdapter extends FloatBuffer { // implement
 
     @Override
     public FloatBuffer put(float c) {
-//        if (position == limit) {
-//            throw new BufferOverflowException();
-//        }
-        floatArray.set(position++, c);
-        return this;
+        throw new ReadOnlyBufferException();
     }
 
     @Override
     public FloatBuffer put(int index, float c) {
-//        if (index < 0 || index >= limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        floatArray.set(index, c);
-        return this;
+        throw new ReadOnlyBufferException();
     }
 
     @Override
     public FloatBuffer slice() {
         byteBuffer.limit(limit << 2);
         byteBuffer.position(position << 2);
-        FloatBuffer result = new DirectReadWriteFloatBufferAdapter((DirectReadWriteByteBuffer) 
-        		byteBuffer.slice());
+        FloatBuffer result = new DirectReadOnlyFloatBufferAdapter((DirectByteBuffer) byteBuffer.slice());
         byteBuffer.clear();
         return result;
     }
 
-	public ArrayBufferView getTypedArray() {
-		return floatArray;
-	}
+    public ArrayBufferView getTypedArray() {
+        return floatArray;
+    }
 
-	public int getElementSize() {
-		return 4;
-	}
+    public int getElementSize() {
+        return 4;
+    }
 }

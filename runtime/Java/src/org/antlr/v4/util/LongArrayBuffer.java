@@ -15,65 +15,67 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferUnderflowException;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.LongBuffer;
 
 /**
- * DoubleArrayBuffer, ReadWriteDoubleArrayBuffer and ReadOnlyDoubleArrayBuffer
- * compose the implementation of array based double buffers.
+ * LongArrayBuffer, ReadWriteLongArrayBuffer and ReadOnlyLongArrayBuffer compose
+ * the implementation of array based long buffers.
  * <p>
- * DoubleArrayBuffer implements all the shared readonly methods and is extended
- * by the other two classes.
+ * LongArrayBuffer implements all the shared readonly methods and is extended by
+ * the other two classes.
  * </p>
  * <p>
  * All methods are marked final for runtime performance.
  * </p>
  * 
  */
-abstract class DoubleArrayBuffer extends DoubleBuffer {
+abstract class LongArrayBuffer extends LongBuffer {
 
-    protected final double[] backingArray;
+    protected final long[] backingArray;
 
     protected final int offset;
 
-    DoubleArrayBuffer(double[] array) {
+    LongArrayBuffer(long[] array) {
         this(array.length, array, 0);
     }
 
-    DoubleArrayBuffer(int capacity) {
-        this(capacity, new double[capacity], 0);
+    LongArrayBuffer(int capacity) {
+        this(capacity, new long[capacity], 0);
     }
 
-    DoubleArrayBuffer(int capacity, double[] backingArray, int offset) {
+    LongArrayBuffer(int capacity, long[] backingArray, int offset) {
         super(capacity);
         this.backingArray = backingArray;
         this.offset = offset;
     }
 
-    public final double get() {
+    public final long get() {
         if (position == limit) {
             throw new BufferUnderflowException();
         }
         return backingArray[offset + position++];
     }
 
-    public final double get(int index) {
+    public final long get(int index) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
         return backingArray[offset + index];
     }
 
-    public final DoubleBuffer get(double[] dest, int off, int len) {
+    public final LongBuffer get(long[] dest, int off, int len) {
         int length = dest.length;
-        if (off < 0 || len < 0 || (long)off + (long)len > length) {
+        if (off < 0 || len < 0 || (long)len + (long)off > length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {
             throw new BufferUnderflowException();
         }
-        System.arraycopy(backingArray, offset + position, dest,
-                off, len);
+        System.arraycopy(backingArray, offset+position, dest, off, len);
         position += len;
         return this;
     }

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
 import com.googlecode.gwtgl.array.ArrayBufferView;
 import com.googlecode.gwtgl.array.Int32Array;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.IntBuffer;
 
 /**
  * This class wraps a byte buffer to be a int buffer.

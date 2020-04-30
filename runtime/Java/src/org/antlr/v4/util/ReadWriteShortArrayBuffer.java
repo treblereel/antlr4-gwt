@@ -15,14 +15,16 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferOverflowException;
+import org.antlr.v4.jre.java.nio.ShortBuffer;
 
 /**
- * FloatArrayBuffer, ReadWriteFloatArrayBuffer and ReadOnlyFloatArrayBuffer
- * compose the implementation of array based float buffers.
+ * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
+ * compose the implementation of array based short buffers.
  * <p>
- * ReadWriteFloatArrayBuffer extends FloatArrayBuffer with all the write
+ * ReadWriteShortArrayBuffer extends ShortArrayBuffer with all the write
  * methods.
  * </p>
  * <p>
@@ -30,11 +32,11 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
+final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
 
-    static ReadWriteFloatArrayBuffer copy(FloatArrayBuffer other,
+    static ReadWriteShortArrayBuffer copy(ShortArrayBuffer other,
             int markOfOther) {
-        ReadWriteFloatArrayBuffer buf = new ReadWriteFloatArrayBuffer(other
+        ReadWriteShortArrayBuffer buf = new ReadWriteShortArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -42,24 +44,24 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         return buf;
     }
 
-    ReadWriteFloatArrayBuffer(float[] array) {
+    ReadWriteShortArrayBuffer(short[] array) {
         super(array);
     }
 
-    ReadWriteFloatArrayBuffer(int capacity) {
+    ReadWriteShortArrayBuffer(int capacity) {
         super(capacity);
     }
 
-    ReadWriteFloatArrayBuffer(int capacity, float[] backingArray,
+    ReadWriteShortArrayBuffer(int capacity, short[] backingArray,
             int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public FloatBuffer asReadOnlyBuffer() {
-        return ReadOnlyFloatArrayBuffer.copy(this, mark);
+    public ShortBuffer asReadOnlyBuffer() {
+        return ReadOnlyShortArrayBuffer.copy(this, mark);
     }
 
-    public FloatBuffer compact() {
+    public ShortBuffer compact() {
         System.arraycopy(backingArray, position + offset, backingArray, offset,
                 remaining());
         position = limit - position;
@@ -68,7 +70,7 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         return this;
     }
 
-    public FloatBuffer duplicate() {
+    public ShortBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -76,7 +78,7 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         return false;
     }
 
-    protected float[] protectedArray() {
+    protected short[] protectedArray() {
         return backingArray;
     }
 
@@ -88,7 +90,7 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         return true;
     }
 
-    public FloatBuffer put(float c) {
+    public ShortBuffer put(short c) {
         if (position == limit) {
             throw new BufferOverflowException();
         }
@@ -96,7 +98,7 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         return this;
     }
 
-    public FloatBuffer put(int index, float c) {
+    public ShortBuffer put(int index, short c) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
@@ -104,7 +106,7 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         return this;
     }
 
-    public FloatBuffer put(float[] src, int off, int len) {
+    public ShortBuffer put(short[] src, int off, int len) {
         int length = src.length;
         if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
@@ -112,14 +114,13 @@ final class ReadWriteFloatArrayBuffer extends FloatArrayBuffer {
         if (len > remaining()) {
             throw new BufferOverflowException();
         }
-        System.arraycopy(src, off, backingArray, offset
-                + position, len);
+        System.arraycopy(src, off, backingArray, offset+position, len);
         position += len;
         return this;
     }
     
-    public FloatBuffer slice() {
-        return new ReadWriteFloatArrayBuffer(remaining(), backingArray, offset
+    public ShortBuffer slice() {
+        return new ReadWriteShortArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
 

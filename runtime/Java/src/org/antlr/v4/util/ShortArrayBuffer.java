@@ -15,14 +15,17 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferUnderflowException;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.ShortBuffer;
 
 /**
- * FloatArrayBuffer, ReadWriteFloatArrayBuffer and ReadOnlyFloatArrayBuffer
- * compose the implementation of array based float buffers.
+ * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
+ * compose the implementation of array based short buffers.
  * <p>
- * FloatArrayBuffer implements all the shared readonly methods and is extended
+ * ShortArrayBuffer implements all the shared readonly methods and is extended
  * by the other two classes.
  * </p>
  * <p>
@@ -30,41 +33,41 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-abstract class FloatArrayBuffer extends FloatBuffer {
+abstract class ShortArrayBuffer extends ShortBuffer {
 
-    protected final float[] backingArray;
+    protected final short[] backingArray;
 
     protected final int offset;
 
-    FloatArrayBuffer(float[] array) {
+    ShortArrayBuffer(short[] array) {
         this(array.length, array, 0);
     }
 
-    FloatArrayBuffer(int capacity) {
-        this(capacity, new float[capacity], 0);
+    ShortArrayBuffer(int capacity) {
+        this(capacity, new short[capacity], 0);
     }
 
-    FloatArrayBuffer(int capacity, float[] backingArray, int offset) {
+    ShortArrayBuffer(int capacity, short[] backingArray, int offset) {
         super(capacity);
         this.backingArray = backingArray;
         this.offset = offset;
     }
 
-    public final float get() {
+    public final short get() {
         if (position == limit) {
             throw new BufferUnderflowException();
         }
         return backingArray[offset + position++];
     }
 
-    public final float get(int index) {
+    public final short get(int index) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
         return backingArray[offset + index];
     }
 
-    public final FloatBuffer get(float[] dest, int off, int len) {
+    public final ShortBuffer get(short[] dest, int off, int len) {
         int length = dest.length;
         if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
@@ -72,7 +75,8 @@ abstract class FloatArrayBuffer extends FloatBuffer {
         if (len > remaining()) {
             throw new BufferUnderflowException();
         }
-        System.arraycopy(backingArray, offset+position, dest, off, len);
+        System.arraycopy(backingArray, offset + position, dest,
+                off, len);
         position += len;
         return this;
     }

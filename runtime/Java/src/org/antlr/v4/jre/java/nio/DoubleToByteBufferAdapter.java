@@ -163,7 +163,7 @@ final class DoubleToByteBufferAdapter extends DoubleBuffer {
     }
 
     @Override
-    protected double[] protectedArray() {
+    public double[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -173,7 +173,7 @@ final class DoubleToByteBufferAdapter extends DoubleBuffer {
     }
 
     @Override
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return false;
     }
 

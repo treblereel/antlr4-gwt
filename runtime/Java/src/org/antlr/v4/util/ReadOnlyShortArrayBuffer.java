@@ -15,14 +15,16 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
+import org.antlr.v4.jre.java.nio.ShortBuffer;
 
 /**
- * FloatArrayBuffer, ReadWriteFloatArrayBuffer and ReadOnlyFloatArrayBuffer
- * compose the implementation of array based float buffers.
+ * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
+ * compose the implementation of array based short buffers.
  * <p>
- * ReadOnlyFloatArrayBuffer extends FloatArrayBuffer with all the write methods
+ * ReadOnlyShortArrayBuffer extends ShortArrayBuffer with all the write methods
  * throwing read only exception.
  * </p>
  * <p>
@@ -30,10 +32,10 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
+final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
 
-    static ReadOnlyFloatArrayBuffer copy(FloatArrayBuffer other, int markOfOther) {
-        ReadOnlyFloatArrayBuffer buf = new ReadOnlyFloatArrayBuffer(other
+    static ReadOnlyShortArrayBuffer copy(ShortArrayBuffer other, int markOfOther) {
+        ReadOnlyShortArrayBuffer buf = new ReadOnlyShortArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -41,19 +43,19 @@ final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
         return buf;
     }
 
-    ReadOnlyFloatArrayBuffer(int capacity, float[] backingArray, int arrayOffset) {
+    ReadOnlyShortArrayBuffer(int capacity, short[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public FloatBuffer asReadOnlyBuffer() {
+    public ShortBuffer asReadOnlyBuffer() {
         return duplicate();
     }
 
-    public FloatBuffer compact() {
+    public ShortBuffer compact() {
         throw new ReadOnlyBufferException();
     }
 
-    public FloatBuffer duplicate() {
+    public ShortBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -61,7 +63,7 @@ final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
         return true;
     }
 
-    protected float[] protectedArray() {
+    protected short[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
@@ -72,25 +74,25 @@ final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
     protected boolean protectedHasArray() {
         return false;
     }
-
-    public FloatBuffer put(float c) {
+    
+    public ShortBuffer put(ShortBuffer buf) {
         throw new ReadOnlyBufferException();
     }
 
-    public FloatBuffer put(int index, float c) {
+    public ShortBuffer put(short c) {
+        throw new ReadOnlyBufferException();
+    }
+
+    public ShortBuffer put(int index, short c) {
+        throw new ReadOnlyBufferException();
+    }
+
+    public final ShortBuffer put(short[] src, int off, int len) {
         throw new ReadOnlyBufferException();
     }
     
-    public FloatBuffer put(FloatBuffer buf) {
-        throw new ReadOnlyBufferException();
-    }
-
-    public final FloatBuffer put(float[] src, int off, int len) {
-        throw new ReadOnlyBufferException();
-    }
-    
-    public FloatBuffer slice() {
-        return new ReadOnlyFloatArrayBuffer(remaining(), backingArray, offset
+    public ShortBuffer slice() {
+        return new ReadOnlyShortArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
 

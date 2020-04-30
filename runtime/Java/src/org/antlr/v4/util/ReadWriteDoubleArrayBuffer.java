@@ -15,14 +15,16 @@
  *  limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
 
+import org.antlr.v4.jre.java.nio.BufferOverflowException;
+import org.antlr.v4.jre.java.nio.DoubleBuffer;
 
 /**
- * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
- * compose the implementation of array based short buffers.
+ * DoubleArrayBuffer, ReadWriteDoubleArrayBuffer and ReadOnlyDoubleArrayBuffer
+ * compose the implementation of array based double buffers.
  * <p>
- * ReadWriteShortArrayBuffer extends ShortArrayBuffer with all the write
+ * ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer with all the write
  * methods.
  * </p>
  * <p>
@@ -30,11 +32,11 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  * 
  */
-final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
+final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
 
-    static ReadWriteShortArrayBuffer copy(ShortArrayBuffer other,
+    static ReadWriteDoubleArrayBuffer copy(DoubleArrayBuffer other,
             int markOfOther) {
-        ReadWriteShortArrayBuffer buf = new ReadWriteShortArrayBuffer(other
+        ReadWriteDoubleArrayBuffer buf = new ReadWriteDoubleArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -42,24 +44,24 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         return buf;
     }
 
-    ReadWriteShortArrayBuffer(short[] array) {
+    ReadWriteDoubleArrayBuffer(double[] array) {
         super(array);
     }
 
-    ReadWriteShortArrayBuffer(int capacity) {
+    ReadWriteDoubleArrayBuffer(int capacity) {
         super(capacity);
     }
 
-    ReadWriteShortArrayBuffer(int capacity, short[] backingArray,
+    ReadWriteDoubleArrayBuffer(int capacity, double[] backingArray,
             int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
-    public ShortBuffer asReadOnlyBuffer() {
-        return ReadOnlyShortArrayBuffer.copy(this, mark);
+    public DoubleBuffer asReadOnlyBuffer() {
+        return ReadOnlyDoubleArrayBuffer.copy(this, mark);
     }
 
-    public ShortBuffer compact() {
+    public DoubleBuffer compact() {
         System.arraycopy(backingArray, position + offset, backingArray, offset,
                 remaining());
         position = limit - position;
@@ -68,7 +70,7 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         return this;
     }
 
-    public ShortBuffer duplicate() {
+    public DoubleBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -76,7 +78,7 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         return false;
     }
 
-    protected short[] protectedArray() {
+    public double[] protectedArray() {
         return backingArray;
     }
 
@@ -84,11 +86,11 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         return offset;
     }
 
-    protected boolean protectedHasArray() {
+    public boolean protectedHasArray() {
         return true;
     }
 
-    public ShortBuffer put(short c) {
+    public DoubleBuffer put(double c) {
         if (position == limit) {
             throw new BufferOverflowException();
         }
@@ -96,7 +98,7 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         return this;
     }
 
-    public ShortBuffer put(int index, short c) {
+    public DoubleBuffer put(int index, double c) {
         if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
@@ -104,7 +106,7 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         return this;
     }
 
-    public ShortBuffer put(short[] src, int off, int len) {
+    public DoubleBuffer put(double[] src, int off, int len) {
         int length = src.length;
         if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
@@ -112,13 +114,14 @@ final class ReadWriteShortArrayBuffer extends ShortArrayBuffer {
         if (len > remaining()) {
             throw new BufferOverflowException();
         }
-        System.arraycopy(src, off, backingArray, offset+position, len);
+        System.arraycopy(src, off, backingArray, offset
+                + position, len);
         position += len;
         return this;
     }
     
-    public ShortBuffer slice() {
-        return new ReadWriteShortArrayBuffer(remaining(), backingArray, offset
+    public DoubleBuffer slice() {
+        return new ReadWriteDoubleArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
 

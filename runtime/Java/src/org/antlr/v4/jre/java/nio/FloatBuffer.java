@@ -17,6 +17,7 @@
 
 package org.antlr.v4.jre.java.nio;
 
+import org.antlr.v4.util.BufferFactory;
 
 /**
  * A buffer of floats.
@@ -111,7 +112,7 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
      *
      * @param capacity  The capacity of the buffer
      */
-    FloatBuffer(int capacity) {
+    protected FloatBuffer(int capacity) {
         super(capacity);
     }
 
@@ -407,21 +408,21 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
      *
      * @return see {@code array()}
      */
-    abstract float[] protectedArray();
+    public abstract float[] protectedArray();
 
     /**
      * Child class implements this method to realize {@code arrayOffset()}.
      *
      * @return see {@code arrayOffset()}
      */
-    abstract int protectedArrayOffset();
+    protected abstract int protectedArrayOffset();
 
     /**
      * Child class implements this method to realize {@code hasArray()}.
      *
      * @return see {@code hasArray()}
      */
-    abstract boolean protectedHasArray();
+    protected abstract boolean protectedHasArray();
 
     /**
      * Writes the given float to the current position and increases the position

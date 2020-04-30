@@ -14,7 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.antlr.v4.jre.java.nio;
+package org.antlr.v4.util;
+
+import org.antlr.v4.jre.java.nio.ByteBuffer;
+import org.antlr.v4.jre.java.nio.CharBuffer;
+import org.antlr.v4.jre.java.nio.DoubleBuffer;
+import org.antlr.v4.jre.java.nio.FloatBuffer;
+import org.antlr.v4.jre.java.nio.IntBuffer;
+import org.antlr.v4.jre.java.nio.LongBuffer;
+import org.antlr.v4.jre.java.nio.ShortBuffer;
 
 /**
  * Provide factory service of buffer classes.
@@ -25,7 +33,7 @@ package org.antlr.v4.jre.java.nio;
  * </p>
  *
  */
-final class BufferFactory {
+final public class BufferFactory {
 
     /**
      * Returns a new byte buffer based on the specified byte array.

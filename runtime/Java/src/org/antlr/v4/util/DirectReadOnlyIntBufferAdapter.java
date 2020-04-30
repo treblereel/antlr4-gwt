@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package org.antlr.v4.jre.java.nio;
-
-
+package org.antlr.v4.util;
 
 import com.googlecode.gwtgl.array.ArrayBufferView;
-import com.googlecode.gwtgl.array.Int16Array;
+import com.googlecode.gwtgl.array.Int32Array;
+import org.antlr.v4.jre.java.nio.ByteOrder;
+import org.antlr.v4.jre.java.nio.DirectByteBuffer;
+import org.antlr.v4.jre.java.nio.IntBuffer;
+import org.antlr.v4.jre.java.nio.ReadOnlyBufferException;
 
 /**
- * This class wraps a byte buffer to be a short buffer.
+ * This class wraps a byte buffer to be a int buffer.
  * <p>
  * Implementation notice:
  * <ul>
@@ -34,29 +36,28 @@ import com.googlecode.gwtgl.array.Int16Array;
  * </p>
  * 
  */
-final class DirectReadWriteShortBufferAdapter extends ShortBuffer { // implements com.googlecode.gwtquake.client.HasArrayBufferView {
+final class DirectReadOnlyIntBufferAdapter extends IntBuffer { // removed implements com.googlecode.gwtquake.client.HasArrayBufferView
 //implements DirectBuffer {
 
-    static ShortBuffer wrap(DirectReadWriteByteBuffer byteBuffer) {
-        return new DirectReadWriteShortBufferAdapter((DirectReadWriteByteBuffer) byteBuffer.slice());
+    static IntBuffer wrap(DirectByteBuffer byteBuffer) {
+        return new DirectReadOnlyIntBufferAdapter((DirectByteBuffer) byteBuffer.slice());
     }
 
-    private final DirectReadWriteByteBuffer byteBuffer;
-    private final Int16Array shortArray;
+    private final DirectByteBuffer byteBuffer;
+    private final Int32Array intArray;
 
-    DirectReadWriteShortBufferAdapter(DirectReadWriteByteBuffer byteBuffer) {
-        super((byteBuffer.capacity() >> 1));
+    DirectReadOnlyIntBufferAdapter(DirectByteBuffer byteBuffer) {
+        super((byteBuffer.capacity() >> 2));
         this.byteBuffer = byteBuffer;
         this.byteBuffer.clear();
-        this.shortArray = Int16Array.create(byteBuffer.byteArray.getBuffer(), 
+        this.intArray = Int32Array.create(byteBuffer.byteArray.getBuffer(), 
         			byteBuffer.byteArray.getByteOffset(),
         			capacity);
     }
 
-    // TODO(haustein) This will be slow
     @Override
-    public ShortBuffer asReadOnlyBuffer() {
-        DirectReadOnlyShortBufferAdapter buf = new DirectReadOnlyShortBufferAdapter(byteBuffer);
+    public IntBuffer asReadOnlyBuffer() {
+        DirectReadOnlyIntBufferAdapter buf = new DirectReadOnlyIntBufferAdapter(byteBuffer);
         buf.limit = limit;
         buf.position = position;
         buf.mark = mark;
@@ -64,21 +65,14 @@ final class DirectReadWriteShortBufferAdapter extends ShortBuffer { // implement
     }
 
     @Override
-    public ShortBuffer compact() {
-        byteBuffer.limit(limit << 1);
-        byteBuffer.position(position << 1);
-        byteBuffer.compact();
-        byteBuffer.clear();
-        position = limit - position;
-        limit = capacity;
-        mark = UNSET_MARK;
-        return this;
+    public IntBuffer compact() {
+        throw new ReadOnlyBufferException();
     }
 
     @Override
-    public ShortBuffer duplicate() {
-        DirectReadWriteShortBufferAdapter buf = new DirectReadWriteShortBufferAdapter(
-        		(DirectReadWriteByteBuffer) byteBuffer.duplicate());
+    public IntBuffer duplicate() {
+        DirectReadOnlyIntBufferAdapter buf = new DirectReadOnlyIntBufferAdapter(
+        		(DirectByteBuffer) byteBuffer.duplicate());
         buf.limit = limit;
         buf.position = position;
         buf.mark = mark;
@@ -86,19 +80,19 @@ final class DirectReadWriteShortBufferAdapter extends ShortBuffer { // implement
     }
 
     @Override
-    public short get() {
+    public int get() {
 //        if (position == limit) {
 //            throw new BufferUnderflowException();
 //        }
-        return (short) shortArray.get(position++);
+        return intArray.get(position++);
     }
 
     @Override
-    public short get(int index) {
-//        if (index < 0 || index >= limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        return (short) shortArray.get(index);
+    public int get(int index) {
+        if (index < 0 || index >= limit) {
+            throw new IndexOutOfBoundsException();
+        }
+        return intArray.get(index);
     }
 
     @Override
@@ -108,7 +102,7 @@ final class DirectReadWriteShortBufferAdapter extends ShortBuffer { // implement
 
     @Override
     public boolean isReadOnly() {
-        return false;
+        return true;
     }
 
     @Override
@@ -117,7 +111,7 @@ final class DirectReadWriteShortBufferAdapter extends ShortBuffer { // implement
     }
 
     @Override
-    protected short[] protectedArray() {
+    protected int[] protectedArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -132,40 +126,29 @@ final class DirectReadWriteShortBufferAdapter extends ShortBuffer { // implement
     }
 
     @Override
-    public ShortBuffer put(short c) {
-//        if (position == limit) {
-//            throw new BufferOverflowException();
-//        }
-        shortArray.set(position++, c);
-        return this;
+    public IntBuffer put(int c) {
+        throw new ReadOnlyBufferException();
     }
 
     @Override
-    public ShortBuffer put(int index, short c) {
-//        if (index < 0 || index >= limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        shortArray.set(index, c);
-        return this;
+    public IntBuffer put(int index, int c) {
+        throw new ReadOnlyBufferException();
     }
 
     @Override
-    public ShortBuffer slice() {
-        byteBuffer.limit(limit << 1);
-        byteBuffer.position(position << 1);
-        ShortBuffer result = new DirectReadWriteShortBufferAdapter((DirectReadWriteByteBuffer) 
-        		byteBuffer.slice());
+    public IntBuffer slice() {
+        byteBuffer.limit(limit << 2);
+        byteBuffer.position(position << 2);
+        IntBuffer result = new DirectReadOnlyIntBufferAdapter((DirectByteBuffer) byteBuffer.slice());
         byteBuffer.clear();
         return result;
     }
 
 	public ArrayBufferView getTypedArray() {
-		return shortArray;
+		return intArray;
 	}
-	
 
 	public int getElementSize() {
-		return 2;
+		return 4;
 	}
-
 }

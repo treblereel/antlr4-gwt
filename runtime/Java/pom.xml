@@ -21,6 +21,13 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.gwtproject.nio</groupId>
+			<artifactId>gwt-nio</artifactId>
+			<version>0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.abego.treelayout</groupId>
 			<artifactId>org.abego.treelayout.core</artifactId>
 			<version>1.0.1</version>

@@ -10,12 +10,15 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.IntBuffer;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 /**
  * Wrapper for {@link ByteBuffer} / {@link CharBuffer} / {@link IntBuffer}.
  *
  * Because Java lacks generics on primitive types, these three types
  * do not share an interface, so we have to write one manually.
  */
+@GwtIncompatible
 public class CodePointBuffer {
 	public enum Type {
 			BYTE,

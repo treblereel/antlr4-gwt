@@ -5,6 +5,7 @@
  */
 package org.antlr.v4.runtime.tree.xpath;
 
+import com.google.gwt.core.shared.GwtIncompatible;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.Lexer;
@@ -16,6 +17,7 @@ import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.misc.Interval;
 
 /** Mimic the old XPathLexer from .g4 file */
+@GwtIncompatible
 public class XPathLexer extends Lexer {
 	public static final int
 		TOKEN_REF=1, RULE_REF=2, ANYWHERE=3, ROOT=4, WILDCARD=5, BANG=6, ID=7,

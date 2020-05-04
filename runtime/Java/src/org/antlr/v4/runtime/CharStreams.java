@@ -6,7 +6,7 @@
 
 package org.antlr.v4.runtime;
 
-import java.nio.CharBuffer;
+//import java.nio.CharBuffer;
 
 /** This class represents the primary interface for creating {@link CharStream}s
  *  from a variety of sources as of 4.7.  The motivation was to support
@@ -194,7 +194,7 @@ public final class CharStreams {
 	/**
 	 * Creates a {@link CharStream} given a {@link String}.
 	 */
-	public static CodePointCharStream fromString(String s) {
+	public static CharStream fromString(String s) {
 		return fromString(s, IntStream.UNKNOWN_SOURCE_NAME);
 	}
 
@@ -202,18 +202,21 @@ public final class CharStreams {
 	 * Creates a {@link CharStream} given a {@link String} and the {@code sourceName}
 	 * from which it came.
 	 */
-	public static CodePointCharStream fromString(String s, String sourceName) {
-		// Initial guess assumes no code points > U+FFFF: one code
-		// point for each code unit in the string
-		CodePointBuffer.Builder codePointBufferBuilder = CodePointBuffer.builder(s.length());
-		// TODO: CharBuffer.wrap(String) rightfully returns a read-only buffer
-		// which doesn't expose its array, so we make a copy.
-		CharBuffer cb = CharBuffer.allocate(s.length());
-		cb.put(s);
-		cb.flip();
-		codePointBufferBuilder.append(cb);
-		return CodePointCharStream.fromBuffer(codePointBufferBuilder.build(), sourceName);
+	public static CharStream fromString(String s, String sourceName) {
+		return new ANTLRInputStream(s);
 	}
+//	public static CodePointCharStream fromString(String s, String sourceName) {
+//		// Initial guess assumes no code points > U+FFFF: one code
+//		// point for each code unit in the string
+//		CodePointBuffer.Builder codePointBufferBuilder = CodePointBuffer.builder(s.length());
+//		// TODO: CharBuffer.wrap(String) rightfully returns a read-only buffer
+//		// which doesn't expose its array, so we make a copy.
+//		CharBuffer cb = CharBuffer.allocate(s.length());
+//		cb.put(s);
+//		cb.flip();
+//		codePointBufferBuilder.append(cb);
+//		return CodePointCharStream.fromBuffer(codePointBufferBuilder.build(), sourceName);
+//	}
 
 	/**
 	 * Creates a {@link CharStream} given an opened {@link ReadableByteChannel}

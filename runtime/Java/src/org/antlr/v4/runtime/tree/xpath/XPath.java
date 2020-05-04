@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 
+import com.google.gwt.core.shared.GwtIncompatible;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -52,6 +53,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
  * <p>
  * Whitespace is not allowed.</p>
  */
+@GwtIncompatible
 public class XPath {
 	public static final String WILDCARD = "*"; // word not operator/separator
 	public static final String NOT = "!"; 	   // word for invert operator

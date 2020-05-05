@@ -6,7 +6,6 @@
 
 package org.antlr.v4.runtime;
 
-import com.google.gwt.core.shared.GwtIncompatible;
 import org.antlr.v4.runtime.misc.Interval;
 
 import java.nio.charset.StandardCharsets;
@@ -19,7 +18,6 @@ import java.nio.charset.StandardCharsets;
  * Use this if you need to parse input which potentially contains
  * Unicode values > U+FFFF.
  */
-@GwtIncompatible
 public abstract class CodePointCharStream implements CharStream {
 	protected final int size;
 	protected final String name;

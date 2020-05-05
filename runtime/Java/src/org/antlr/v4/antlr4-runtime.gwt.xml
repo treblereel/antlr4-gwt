@@ -1,8 +1,9 @@
 <module>
   <inherits name='com.google.gwt.user.User'/>
-  <inherits name='org.antlr.v4.runtime.antlr4-annotations' />
+  <inherits name='org.antlr.v4.runtime.antlr4-annotations'/>
+  <inherits name='org.antlr.v4.runtime.Emulation'/>
 
-  <super-source path="jre" />
+  <super-source path="jre"/>
   <source path="runtime"></source>
 
 </module>

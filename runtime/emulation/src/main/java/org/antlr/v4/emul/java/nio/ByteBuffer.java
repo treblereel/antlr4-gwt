@@ -17,6 +17,9 @@
 
 package java.nio;
 
+import elemental2.core.ArrayBuffer;
+import elemental2.core.ArrayBufferView;
+import jsinterop.base.Js;
 import org.apache.harmony.luni.platform.Endianness;
 
 
@@ -1172,4 +1175,13 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
     public ByteBuffer stringToByteBuffer(String s) {
     	return new StringByteBuffer(s);
     }
+
+    public static ByteBuffer wrapArrayBuffer(ArrayBuffer arrayBuffer) {
+        return new DirectReadWriteByteBuffer(arrayBuffer);
+    }
+
+    public ArrayBufferView getTypedArray() {
+        return Js.<HasArrayBufferView>uncheckedCast(this).getTypedArray();
+    }
+
 }

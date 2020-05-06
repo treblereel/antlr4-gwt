@@ -54,7 +54,6 @@
 	<modules>
 		<module>runtime/Java</module>
 		<module>runtime/JavaAnnotations</module>
-		<module>runtime/emulation</module>
 		<!-- <module>tool</module> -->
 		<!-- <module>antlr4-maven-plugin</module> -->
 	</modules>

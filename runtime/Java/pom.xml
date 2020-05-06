@@ -35,9 +35,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>jre-emulation</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.gwtproject.nio</groupId>
+			<artifactId>gwt-nio</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
